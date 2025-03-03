@@ -100,6 +100,7 @@ class PolyHandler
 	{
 		final output:ParseRules = ParseRules.getDefault();
 		output.addType("txt", TextFileFormat.LINES);
+		output.addType("json", TextFileFormat.JSON); // so json files can be merged too
 		output.addType("hxs", TextFileFormat.PLAINTEXT);
 		output.addType("lua", TextFileFormat.PLAINTEXT);
 		return output != null ? output : null;
