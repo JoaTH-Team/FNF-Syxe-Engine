@@ -101,19 +101,25 @@ class PlayState extends MusicBeatState
 	public static var modsSprite:Map<String, FunkSprite> = new Map<String, FunkSprite>();
 
 	public static var luaArray:Array<LuaScript> = [];
+	public static var luaStage:LuaScript = null;
 
 	function setDaFunction(name:Array<String>, code:Array<Dynamic>) {
-		for (script in luaArray)
+		for (script in luaArray) {
 			script.createSameFunction(name, code);
+			luaStage.createSameFunction(name, code);
+		}
 	}
 
 	function setDaVariable(name:Array<String>, value:Dynamic) {
-		for (script in luaArray)
+		for (script in luaArray) {
 			script.createSameVariable(name, value);
+			luaStage.createSameVariable(name, value);
+		}
 	}
 
 	function createStage(name:String) {
-		return new LuaScript(Paths.data('stages/$name.lua'));
+		luaStage = new LuaScript(Paths.data('stages/$name.lua'));
+		luaStage.executeFile(name);
 	}
 
 	override public function create()
@@ -127,7 +133,7 @@ class PlayState extends MusicBeatState
 
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD);
-		FlxG.cameras.setDefaultDrawTarget(camGame, true);
+		FlxG.cameras.setDefaultDrawTarget(camGame, false);
 
 		persistentUpdate = true;
 		persistentDraw = true;

@@ -12,11 +12,19 @@ import flixel.FlxG;
 class LuaScript {
     public static var vm:Null<RawPointer<Lua_State>> = null;
 
+    public function executeFile(file:String) {
+        try {
+            LuaUtils.doFile(vm, Paths.data('$file.lua'));
+        } catch (e:Dynamic) {
+            trace('Error executing $file.lua: $e');
+        }
+    }
+    
     public function new(file:String) {
         vm = LuaL.newstate();
         LuaL.openlibs(vm);
-    
-        LuaUtils.doFile(vm, Paths.data('$file.lua'));
+
+        executeFile(file);
         
         // Whole Code
         createSameCode(["createSprite", "makeSprite"], function (tag:String, x:Float = 0, y:Float = 0, paths:String = null) {
