@@ -1,5 +1,6 @@
 package states;
 
+import sys.FileSystem;
 import backend.scripts.LuaScript;
 import backend.game.FunkSprite;
 import backend.chart.Song;
@@ -97,7 +98,7 @@ class PlayState extends MusicBeatState
 	var inCutscene:Bool = false;
 
 	public static var instance:PlayState = null;
-	public static var modsSprite:Map<String, FunkSprite> = new Map<Map, FunkSprite>();
+	public static var modsSprite:Map<String, FunkSprite> = new Map<String, FunkSprite>();
 
 	public static var luaArray:Array<LuaScript> = [];
 
@@ -151,7 +152,7 @@ class PlayState extends MusicBeatState
 		setDaFunction(["create", "onCreate"], []);
 
 		setDaVariable(["defaultCamZoom", "defaultCameraZoom", "defaultZoom"], defaultCamZoom);		
-		setDaFunction(["curStage", "currentStage"], curStage);
+		setDaVariable(["curStage", "currentStage"], curStage);
 
 		if (curStage == null) {
 			createStage("stage");

@@ -43,14 +43,13 @@ class LuaScript {
         createSameCode(["setProperty", "setLuaProperty"], function (tag:String, value:Dynamic) {
             if (getTag(tag, "sprite") != null) {
                 var sprite:FunkSprite = getTag(tag, "sprite");
-                return Reflect.setProperty(sprite, value);
+                return Reflect.setProperty(sprite, tag, value);
             } else {
                 var state = FlxG.state;
                 if (Std.isOfType(state, states.PlayState)) {
                     var playState:states.PlayState = cast state;
                     return Reflect.setProperty(playState, tag, value);
                 }
-                return null;
             }
         });
         createSameCode(["getProperty", "getLuaProperty"], function (tag:String, value:Dynamic) {
@@ -69,27 +68,39 @@ class LuaScript {
         createSameCode(["setPosition", "setLuaPosition"], function (tag:String, x:Float, y:Float) {
             if (getTag(tag, "sprite") != null) {
                 var sprite:FunkSprite = getTag(tag, "sprite");
-                return PlayState.modsSprite.get(tag).setPosition(x, y);
+                sprite.setPosition(x, y);
             } else {
                 var state = FlxG.state;
                 if (Std.isOfType(state, states.PlayState)) {
                     var playState:states.PlayState = cast state;
-                    return Reflect.setProperty(playState, tag, value);
+                    if (Reflect.hasField(playState, tag)) {
+                        var obj = Reflect.getProperty(playState, tag);
+                        if (Reflect.hasField(obj, "setPosition")) {
+                            Reflect.callMethod(obj, Reflect.field(obj, "setPosition"), [x, y]);
+                        }
+                    }
                 }
             }
-
         });
         createSameCode(["setScale", "setLuaScale"], function (tag:String, x:Float, y:Float) {
             if (getTag(tag, "sprite") != null) {
                 var sprite:FunkSprite = getTag(tag, "sprite");
-                return PlayState.modsSprite.get(tag).scale.set(x, y);
+                sprite.scale.set(x, y);
+                return sprite.scale;
             } else {
                 var state = FlxG.state;
                 if (Std.isOfType(state, states.PlayState)) {
                     var playState:states.PlayState = cast state;
-                    return Reflect.setProperty(playState, tag, value);
+                    if (Reflect.hasField(playState, tag)) {
+                        var obj = Reflect.getProperty(playState, tag);
+                        if (Reflect.hasField(obj, "scale")) {
+                            Reflect.setProperty(obj, "scale", new flixel.math.FlxPoint(x, y));
+                            return Reflect.getProperty(obj, "scale");
+                        }
+                    }
                 }
             }
+            return null;
         });
 
         Lua.close(vm);
@@ -97,24 +108,24 @@ class LuaScript {
     }
 
     // Toolkit
-    public static function createSameCode(name:Array<String>, code:Dynamic) {
+    public function createSameCode(name:Array<String>, code:Dynamic) {
         for (i in name)
             return LuaUtils.addFunction(vm, i, code);
     }
 
-    public static function createSameVariable(name:Array<String>, value:Dynamic) {
+    public function createSameVariable(name:Array<String>, value:Dynamic) {
         for (i in name)
             return LuaUtils.setVariable(vm, i, value);
     }
 
-    public static function setTag(tag:String, whatIs:String, variable:Dynamic) {
+    public function setTag(tag:String, whatIs:String, variable:Dynamic) {
         switch (whatIs) {
             case "sprite":
                 return PlayState.modsSprite.set(tag, variable);
         }
     }
 
-    public static function getTag(tag:String, whatIs:String) {
+    public function getTag(tag:String, whatIs:String) {
         switch (whatIs) {
             case "sprite":
                 if (!PlayState.modsSprite.exists(tag)) {
@@ -123,10 +134,12 @@ class LuaScript {
                 }
                 return PlayState.modsSprite.get(tag);
         }
+        return null;
     }
 
-    public static function createSameFunction(name:Array<String>, code:Array<Dynamic>) {
+    public function createSameFunction(name:Array<String>, code:Array<Dynamic>) {
         for (i in name)
             return LuaUtils.callFunctionByName(vm, i, code);
+        return null;
     }
 }
