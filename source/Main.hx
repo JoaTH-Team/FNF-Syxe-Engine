@@ -1,8 +1,7 @@
 package;
 
-import openfl.text.TextFormat;
+import objects.counter.DebugGame;
 import flixel.util.FlxColor;
-import openfl.display.FPS;
 import flixel.FlxG;
 import openfl.display.Sprite;
 import flixel.FlxGame;
@@ -22,17 +21,7 @@ class Main extends Sprite
 		}
 	}
 
-	var fpsCounter:FPS;
-
-	public function fpsConfig()
-	{
-		return {
-			"x": 10,
-			"y": 3,
-			"color": FlxColor.fromString("0xFFFFFF"),
-			"font": "vcr.ttf"
-		};
-	}
+	var debugGame:DebugGame;
 
 	public function new()
 	{
@@ -42,9 +31,7 @@ class Main extends Sprite
 		// Init Game
 		addChild(game);
 
-		fpsCounter = new FPS(fpsConfig().x, fpsConfig().y, fpsConfig().color);
-		// Set Font for FPS
-		fpsCounter.defaultTextFormat = new TextFormat(Paths.font(fpsConfig().font));
-		addChild(fpsCounter);
+		debugGame = new DebugGame(10, 10, FlxColor.fromString("0xFFFFFF"), "vcr.ttf");
+		addChild(debugGame);
 	}
 }
