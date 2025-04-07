@@ -101,7 +101,7 @@ class MainMenuState extends MusicBeatState
 		}
 
 		if (FlxG.keys.justPressed.SEVEN)
-			FlxG.switchState(() -> new states.debugbugbugbug.AnimationDebug());
+			FlxG.switchState(() -> new states.test.DaCharacter());
 
 		super.update(elapsed);
 		menuItems.forEach(function(spr:FunkSprite)

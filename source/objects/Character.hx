@@ -4,6 +4,7 @@ import backend.chart.Conductor;
 import openfl.Assets;
 import haxe.ds.StringMap;
 import backend.game.FunkSprite;
+import backend.CoolUtil;
 
 using StringTools;
 
@@ -15,39 +16,50 @@ class Character extends FunkSprite
 	public var isPlayer:Bool = false;
 	public var icon:String = "bf";
 	public var healthColor:String = "0x3291cb";
-	public var animationOffsets:Map<String, Array<Dynamic>>;
+	public var animationOffsets:Map<String, Array<Float>>;
+	public var holdTimer:Float = 0;
 
 	public function new(x:Float = 0, y:Float = 0, char:String = "bf", isPLayer:Bool = false)
 	{
 		super(x, y);
+		antialiasing = true;
+		active = true;
 
-		animationOffsets = new Map<String, Array<Dynamic>>();
-
+		animationOffsets = new Map<String, Array<Float>>();
 		this.curCharacter = char;
 		this.isPlayer = isPLayer;
 		this.animations = new StringMap<String>();
 		this.characterData = new StringMap<String>();
 
-		loadDataFromText(getFile(curCharacter));
+		try {
+			loadDataFromText(getFile(curCharacter));
+		} catch(e:Dynamic) {
+			trace('Error loading character data for $char: $e');
+		}
 	}
 
 	function getFile(curCharacterChar:String)
-		return Assets.getText(Paths.data("characters/" + curCharacterChar + ".txt"));
+	{
+		var path = Paths.data("characters/" + curCharacterChar + ".txt");
+		if (!Assets.exists(path)) {
+			trace('Character file not found: $path');
+			return "";
+		}
+		return Assets.getText(path);
+	}
 
 	public function loadDataFromText(textData:String):Void
 	{
+		if (textData == null || textData == "") return;
+
 		var lines:Array<String> = textData.split("\n");
-		var currentAnimationcurCharacter:String = null;
+		var currentAnimation:String = null;
 
 		for (line in lines)
 		{
-			line = StringTools.trim(line); // Remove leading/trailing whitespace
+			line = StringTools.trim(line);
+			if (line == "" || line.startsWith("#")) continue;
 
-			// Skip empty lines or comments
-			if (line == "" || line.startsWith("#"))
-				continue;
-
-			// Split key::value pairs
 			if (line.indexOf("::") != -1)
 			{
 				var parts:Array<String> = line.split("::");
@@ -59,88 +71,75 @@ class Character extends FunkSprite
 					case "curCharacter":
 						this.curCharacter = value;
 					case "animation_frames":
-						this.frames = Paths.getSparrowAtlas('characters/$value');
+						try {
+							this.frames = Paths.getSparrowAtlas('characters/$value');
+						} catch(e:Dynamic) {
+							trace('Error loading frames for $value: $e');
+						}
 					case "animation_prefix_data":
-						// Split the value into parts
 						var parts:Array<String> = value.split(",");
-						if (parts.length >= 4) // Ensure there are enough parts
+						if (parts.length >= 4)
 						{
-							var curCharacter:String = parts[0];
+							var animName:String = parts[0];
 							var frame:String = parts[1];
 							var speed:Int = Std.parseInt(parts[2]);
-							var loop:Bool = parts[3] != "false"; // Fix: Check for "true" or "false"
+							var loop:Bool = parts[3] != "false";
 
-							// Add the animation
-							this.animation.addByPrefix(curCharacter, frame, speed, loop);
-							currentAnimationcurCharacter = curCharacter;
+							if (frames != null) {
+								animation.addByPrefix(animName, frame, speed, loop);
+								currentAnimation = animName;
+							}
 						}
-						else
-						{
-							trace("Invalid animation_prefix_data format: " + value);
-						}
-
 					case "animation_indices_data":
 						var parts:Array<String> = value.split(",");
-						if (parts.length >= 7) // Ensure there are enough parts
+						if (parts.length >= 7)
 						{
-							var curCharacter:String = parts[0];
+							var animName:String = parts[0];
 							var prefix:String = parts[1];
-							var ind:Array<Int> = backend.CoolUtil.genNumFromTo(Std.parseInt(parts[2]), Std.parseInt(parts[3]));
+							var ind:Array<Int> = CoolUtil.genNumFromTo(Std.parseInt(parts[2]), Std.parseInt(parts[3]));
 							var postfix:String = parts[4];
 							var speed:Int = Std.parseInt(parts[5]);
-							var loop:Bool = parts[6] != "false"; // Fix: Check for "true" or "false"
+							var loop:Bool = parts[6] != "false";
 
-							// Add the animation
-							this.animation.addByIndices(curCharacter, prefix, ind, postfix, speed, loop);
+							if (frames != null) {
+								animation.addByIndices(animName, prefix, ind, postfix, speed, loop);
+							}
 						}
-						else
-						{
-							trace("Invalid animation_indices_data format: " + value);
-						}
-
 					case "animation_offset":
-						// Split the value into parts
 						var parts:Array<String> = value.split(",");
-						if (parts.length >= 3) // Ensure there are enough parts
+						if (parts.length >= 3)
 						{
-							var curCharacter:String = parts[0];
+							var animName:String = parts[0];
 							var x:Float = Std.parseFloat(parts[1]);
 							var y:Float = Std.parseFloat(parts[2]);
-
-							// Add the animation offset
-							addOffset(curCharacter, x, y);
-						}
-						else
-						{
-							trace("Invalid animation_offset format: " + value);
+							addOffset(animName, x, y);
 						}
 					case "icon":
 						this.icon = value;
 					case "playAnim":
-						this.playAnim(value);
+						if (animation.exists(value)) {
+							playAnim(value);
+						}
 					case "healthColor":
 						this.healthColor = value;
 					default:
-						// Store any other key-value pairs in characterData
 						characterData.set(key, value);
 				}
 			}
 		}
 	}
 
-	public var holdTimer:Float = 0.1;
-
-	override function playAnim(curCharacter:String, force:Bool = false)
+	override function playAnim(animName:String, force:Bool = false)
 	{
-		var daOffset = animationOffsets.get(curCharacter);
-		if (animationOffsets.exists(curCharacter))
-		{
-			offset.set(daOffset[0], daOffset[1]);
+		if (animation.exists(animName)) {
+			var daOffset = animationOffsets.get(animName);
+			if (daOffset != null) {
+				offset.set(daOffset[0], daOffset[1]);
+			} else {
+				offset.set(0, 0);
+			}
+			super.playAnim(animName, force);
 		}
-		else
-			offset.set(0, 0);
-
-		super.playAnim(curCharacter, force);
 	}
 
 	override function update(elapsed:Float)
@@ -155,9 +154,9 @@ class Character extends FunkSprite
 			}
 
 			var dadVar:Float = 4;
-
 			if (curCharacter == 'dad')
 				dadVar = 6.1;
+
 			if (holdTimer >= Conductor.stepCrochet * dadVar * 0.001)
 			{
 				dance();
@@ -168,34 +167,19 @@ class Character extends FunkSprite
 
 	public function dance()
 	{
-		var daOffset = animationOffsets.get(curCharacter);
-		if (animationOffsets.exists(curCharacter))
-		{
-			offset.set(daOffset[0], daOffset[1]);
+		if (animation.exists("idle")) {
+			playAnim("idle");
+		} else if (animation.exists("danceLeft") && animation.exists("danceRight")) {
+			if (animation.curAnim != null && animation.curAnim.name == "danceLeft") {
+				playAnim("danceRight");
+			} else {
+				playAnim("danceLeft");
+			}
 		}
-		else
-			offset.set(0, 0);
-
-		// for every character
-		if (animation.curAnim != null && this.animation.exists("idle"))
-			this.animation.play("idle");
-
-		// for character have danceLeft/danceRight
-		if (animation.curAnim != null && this.animation.exists("danceLeft") && this.animation.curAnim.name != "danceLeft")
-			this.animation.play("danceLeft");
-		else if (animation.curAnim != null && this.animation.exists("danceRight") && this.animation.curAnim.name != "danceRight")
-			this.animation.play("danceRight");
 	}
 
-	public function addOffset(curCharacter:String, x:Float = 0, y:Float = 0)
+	public function addOffset(animName:String, x:Float = 0, y:Float = 0)
 	{
-		var daOffset = animationOffsets.get(curCharacter);
-		if (animationOffsets.exists(curCharacter))
-		{
-			offset.set(daOffset[0], daOffset[1]);
-		}
-		else
-			offset.set(0, 0);
-		animationOffsets[curCharacter] = [x, y];
+		animationOffsets.set(animName, [x, y]);
 	}
 }

@@ -46,34 +46,26 @@ class TitleState extends MusicBeatState
 	}
 
 	var dancedLeft:Bool = true;
+	var gfDance:FunkSprite;
+	var titleText:FunkSprite;
 
 	function startIntro():Void
 	{
 		FlxG.sound.playMusic(Paths.music("freakyMenu/freakyMenu"));
 		Conductor.changeBPM(102);
 
-		FunkGame.quickAddSprite({
-			name: "gfDance",
-			x: titleData.gfPos[0],
-			y: titleData.gfPos[1],
-			withFrames: true,
-			framesType: "sparrow",
-			image: "gfDanceTitle"
-		});
-		cast(FunkGame.getVariable("gfDance"), FunkSprite).quickAddIncAnim("danceLeft", "gfDance", CoolUtil.genNumFromTo(0, 14));
-		cast(FunkGame.getVariable("gfDance"), FunkSprite).quickAddIncAnim("danceRight", "gfDance", CoolUtil.genNumFromTo(15, 30));
+		gfDance = new FunkSprite(titleData.gfPos[0], titleData.gfPos[1]);
+		gfDance.frames = Paths.getSparrowAtlas("gfDanceTitle");
+		gfDance.quickAddIncAnim("danceLeft", "gfDance", CoolUtil.genNumFromTo(0, 14));
+		gfDance.quickAddIncAnim("danceRight", "gfDance", CoolUtil.genNumFromTo(15, 30));
+		add(gfDance);
 
-		FunkGame.quickAddSprite({
-			name: "titleText",
-			x: titleData.titlePos[0],
-			y: titleData.titlePos[1],
-			withFrames: true,
-			framesType: "sparrow",
-			image: "titleEnter"
-		});
-		cast(FunkGame.getVariable("titleText"), FunkSprite).quickAddPrefixAnim("idle", "Press Enter to Begin", true);
-		cast(FunkGame.getVariable("titleText"), FunkSprite).quickAddPrefixAnim("pressed", "ENTER PRESSED", true);
-		cast(FunkGame.getVariable("titleText"), FunkSprite).playAnim("idle", true);
+		titleText = new FunkSprite(titleData.titlePos[0], titleData.titlePos[1]);
+		titleText.frames = Paths.getSparrowAtlas("titleEnter");
+		titleText.quickAddPrefixAnim("idle", "Press Enter to Begin", true);
+		titleText.quickAddPrefixAnim("pressed", "ENTER PRESSED", true);
+		titleText.playAnim("idle", true);
+		add(titleText);
 	}
 
 	override function update(elapsed:Float)
@@ -86,7 +78,7 @@ class TitleState extends MusicBeatState
 		if (Controls.justPressed("accept"))
 		{
 			FlxG.sound.play(Paths.sound('menu/confirmMenu'));
-			cast(FunkGame.getVariable("titleText"), FunkSprite).playAnim("pressed", true);
+			titleText.playAnim("pressed", true);
 			camera.flash(FlxColor.WHITE, 2, function()
 			{
 				FlxG.switchState(() -> new MainMenuState());
@@ -99,6 +91,6 @@ class TitleState extends MusicBeatState
 		super.beatHit();
 		dancedLeft = !dancedLeft;
 
-		cast(FunkGame.getVariable("gfDance"), FunkSprite).playAnim((dancedLeft ? "danceLeft" : "danceRight"));
+		gfDance.playAnim((dancedLeft ? "danceLeft" : "danceRight"));
 	}
 }
