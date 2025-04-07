@@ -81,7 +81,6 @@ class FreeplayState extends MusicBeatState
 			{
 				var weekData = Assets.getText(Paths.data("weeks/" + week));
 				var weekLines = weekData.split("\n");
-				var songData = new SongMetaData("", 0, "", "");
 				var iconsArray:Array<String> = [];
 				for (line in weekLines)
 				{
@@ -96,7 +95,6 @@ class FreeplayState extends MusicBeatState
 							addWeek(lineData[1].split(","), 1, iconsArray);
 					}
 				}
-				// songs.push(songData);
 			}
 		}
 	}

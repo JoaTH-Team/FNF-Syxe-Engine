@@ -36,7 +36,7 @@ using StringTools;
 
 class PlayState extends MusicBeatState
 {
-	public static var curStage:String = '';
+	public static var curStage:String = 'stage'; // damn
 	public static var SONG:SwagSong;
 	public static var isStoryMode:Bool = false;
 	public static var storyWeek:Int = 0;
@@ -101,25 +101,21 @@ class PlayState extends MusicBeatState
 	public static var modsSprite:Map<String, FunkSprite> = new Map<String, FunkSprite>();
 
 	public static var luaArray:Array<LuaScript> = [];
-	public static var luaStage:LuaScript = null;
 
 	function setDaFunction(name:Array<String>, code:Array<Dynamic>) {
 		for (script in luaArray) {
 			script.createSameFunction(name, code);
-			luaStage.createSameFunction(name, code);
 		}
 	}
 
 	function setDaVariable(name:Array<String>, value:Dynamic) {
 		for (script in luaArray) {
 			script.createSameVariable(name, value);
-			luaStage.createSameVariable(name, value);
 		}
 	}
 
 	function createStage(name:String) {
-		luaStage = new LuaScript(Paths.data('stages/$name.lua'));
-		luaStage.executeFile(name);
+		luaArray.push(new LuaScript(Paths.data('stages/$name')));
 	}
 
 	override public function create()

@@ -15,8 +15,11 @@ class LuaScript {
     public function executeFile(file:String) {
         try {
             LuaUtils.doFile(vm, Paths.data('$file.lua'));
+            trace('Executed $file.lua');
+            return null; // for nothing
         } catch (e:Dynamic) {
             trace('Error executing $file.lua: $e');
+            return null;
         }
     }
     

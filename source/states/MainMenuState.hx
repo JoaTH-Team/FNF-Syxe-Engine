@@ -1,5 +1,6 @@
 package states;
 
+import flixel.util.FlxColor;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import backend.game.FunkSprite;
 import flixel.FlxObject;
@@ -71,7 +72,8 @@ class MainMenuState extends MusicBeatState
 		FlxG.camera.follow(camFollow, LOCKON, 0.14);
 		add(camFollow);
 
-		versionText = new FlxText(10, FlxG.height - 24, 0, "FNF Syxe Engine v" + FlxG.stage.application.meta.get("version"), 12);
+		versionText = new FlxText(10, FlxG.height - 24, 0, "Syxe Engine v" + FlxG.stage.application.meta.get("version"), 12);
+		versionText.setFormat(Paths.font("vcr.ttf"), 12, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		versionText.scrollFactor.set();
 		add(versionText);
 
