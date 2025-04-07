@@ -14,6 +14,7 @@ class MusicBeatState extends FlxUIState
 	{
 		super.create();
 
+		Paths.cleanMemory();
 		FunkGame.clearVariable();
 	}
 

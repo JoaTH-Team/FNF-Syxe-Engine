@@ -1,5 +1,6 @@
 package backend;
 
+import openfl.system.System;
 import flixel.FlxG;
 import flixel.graphics.FlxGraphic;
 import flixel.graphics.frames.FlxAtlasFrames;
@@ -130,5 +131,12 @@ class Paths
 	inline static public function getAsepriteAtlas(key:String):FlxAtlasFrames
 	{
 		return FlxAtlasFrames.fromAseprite(image(key), file('images/$key.json'));
+	}
+
+	inline static public function cleanMemory():Void
+	{
+		for (asset in currentTrackedAssets)
+			asset.destroy();
+		System.gc();
 	}
 }
