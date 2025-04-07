@@ -133,10 +133,10 @@ class Paths
 		return FlxAtlasFrames.fromAseprite(image(key), file('images/$key.json'));
 	}
 
+	// TODO: Make this function even better
 	inline static public function cleanMemory():Void
 	{
-		for (asset in currentTrackedAssets)
-			asset.destroy();
+		FlxG.bitmap.clearCache();
 		System.gc();
 	}
 }

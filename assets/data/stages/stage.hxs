@@ -1,5 +1,0 @@
-function onCreate() {
-    var bg:FlxSprite = new FlxSprite(10, 10);
-    bg.makeGraphic(100, 100);
-    add(bg);
-}

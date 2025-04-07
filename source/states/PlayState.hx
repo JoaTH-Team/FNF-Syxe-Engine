@@ -1,5 +1,7 @@
 package states;
 
+import backend.scripts.LuaScript;
+import backend.game.FunkSprite;
 import backend.chart.Song;
 import objects.Note;
 import objects.Character;
@@ -94,8 +96,29 @@ class PlayState extends MusicBeatState
 
 	var inCutscene:Bool = false;
 
+	public static var instance:PlayState = null;
+	public static var modsSprite:Map<String, FunkSprite> = new Map<Map, FunkSprite>();
+
+	public static var luaArray:Array<LuaScript> = [];
+
+	function setDaFunction(name:Array<String>, code:Array<Dynamic>) {
+		for (script in luaArray)
+			script.createSameFunction(name, code);
+	}
+
+	function setDaVariable(name:Array<String>, value:Dynamic) {
+		for (script in luaArray)
+			script.createSameVariable(name, value);
+	}
+
+	function createStage(name:String) {
+		return new LuaScript(Paths.data('stages/$name.lua'));
+	}
+
 	override public function create()
 	{
+		instance = this;
+
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
@@ -114,29 +137,27 @@ class PlayState extends MusicBeatState
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
 
-		defaultCamZoom = 0.9;
-		curStage = 'stage';
-		var bg:FlxSprite = new FlxSprite(-600, -200).loadGraphic('assets/images/stageback.png');
-		bg.antialiasing = true;
-		bg.scrollFactor.set(0.9, 0.9);
-		bg.active = false;
-		add(bg);
+		var foldersToCheck:Array<String> = [Paths.file('scripts/')];
+		for (folder in foldersToCheck) {
+			if (FileSystem.exists(folder) && FileSystem.isDirectory(folder)) {
+				for (file in FileSystem.readDirectory(folder)) {
+					if (file.endsWith('.lua')) {
+						luaArray.push(new LuaScript(folder + file));
+					}
+				}
+			}
+		}
 
-		var stageFront:FlxSprite = new FlxSprite(-650, 600).loadGraphic('assets/images/stagefront.png');
-		stageFront.setGraphicSize(Std.int(stageFront.width * 1.1));
-		stageFront.updateHitbox();
-		stageFront.antialiasing = true;
-		stageFront.scrollFactor.set(0.9, 0.9);
-		stageFront.active = false;
-		add(stageFront);
+		setDaFunction(["create", "onCreate"], []);
 
-		var stageCurtains:FlxSprite = new FlxSprite(-500, -300).loadGraphic('assets/images/stagecurtains.png');
-		stageCurtains.setGraphicSize(Std.int(stageCurtains.width * 0.9));
-		stageCurtains.updateHitbox();
-		stageCurtains.antialiasing = true;
-		stageCurtains.scrollFactor.set(1.3, 1.3);
-		stageCurtains.active = false;
-		add(stageCurtains);
+		setDaVariable(["defaultCamZoom", "defaultCameraZoom", "defaultZoom"], defaultCamZoom);		
+		setDaFunction(["curStage", "currentStage"], curStage);
+
+		if (curStage == null) {
+			createStage("stage");
+		} else {
+			createStage(curStage.toLowerCase());
+		}
 
 		var gfVersion:String = 'gf';
 
@@ -252,6 +273,8 @@ class PlayState extends MusicBeatState
 
 		// cameras = [FlxG.cameras.list[1]];
 		startingSong = true;
+
+		setDaFunction(["createPost", "onCreatePost"], []);
 
 		if (isStoryMode)
 		{

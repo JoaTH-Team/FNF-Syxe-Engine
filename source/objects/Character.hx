@@ -139,6 +139,7 @@ class Character extends FunkSprite
 				offset.set(0, 0);
 			}
 			super.playAnim(animName, force);
+			updateHitbox();
 		}
 	}
 
@@ -181,5 +182,9 @@ class Character extends FunkSprite
 	public function addOffset(animName:String, x:Float = 0, y:Float = 0)
 	{
 		animationOffsets.set(animName, [x, y]);
+		if (animation.curAnim != null && animation.curAnim.name == animName) {
+			offset.set(x, y);
+			updateHitbox();
+		}
 	}
 }
