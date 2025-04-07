@@ -102,15 +102,15 @@ class PlayState extends MusicBeatState
 
 	public static var luaArray:Array<LuaScript> = [];
 
-	function setDaFunction(name:Array<String>, code:Array<Dynamic>) {
+	function setDaFunction(name:String, code:Array<Dynamic>) {
 		for (script in luaArray) {
-			script.createSameFunction(name, code);
+			script.createFunction(name, code);
 		}
 	}
 
-	function setDaVariable(name:Array<String>, value:Dynamic) {
+	function setDaVariable(name:String, value:Dynamic) {
 		for (script in luaArray) {
-			script.createSameVariable(name, value);
+			script.setVariable(name, value);
 		}
 	}
 
@@ -151,10 +151,7 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		setDaFunction(["create", "onCreate"], []);
-
-		setDaVariable(["defaultCamZoom", "defaultCameraZoom", "defaultZoom"], defaultCamZoom);		
-		setDaVariable(["curStage", "currentStage"], curStage);
+		setDaFunction("create", []);
 
 		if (curStage == null) {
 			createStage("stage");
@@ -276,8 +273,6 @@ class PlayState extends MusicBeatState
 
 		// cameras = [FlxG.cameras.list[1]];
 		startingSong = true;
-
-		setDaFunction(["createPost", "onCreatePost"], []);
 
 		if (isStoryMode)
 		{

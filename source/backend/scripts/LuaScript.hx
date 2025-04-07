@@ -30,28 +30,28 @@ class LuaScript {
         executeFile(file);
         
         // Whole Code
-        createSameCode(["createSprite", "makeSprite"], function (tag:String, x:Float = 0, y:Float = 0, paths:String = null) {
+        createFunction("createSprite", function (tag:String, x:Float = 0, y:Float = 0, paths:String = null) {
             var sprite:FunkSprite = new FunkSprite(x, y);
             sprite.loadGraphic(Paths.image(paths));
             sprite.active = true;
             setTag(tag, "sprite", sprite);
         });
-        createSameCode(["addSprite", "addLuaSprite"], function (tag:String) {
+        createFunction("addSprite", function (tag:String) {
             var sprite:FunkSprite = getTag(tag, "sprite");
             if (sprite != null)
                 PlayState.instance.add(sprite);
         });
-        createSameCode(["removeSprite", "removeLuaSprite"], function (tag:String) {
+        createFunction("removeSprite", function (tag:String) {
             var sprite:FunkSprite = getTag(tag, "sprite");
             if (sprite != null)
                 PlayState.instance.remove(sprite);
         });
-        createSameCode(["insertSprite", "insertLuaSprite"], function (tag:String, index:Int) {
+        createFunction("insertSprite", function (tag:String, index:Int) {
             var sprite:FunkSprite = getTag(tag, "sprite");
             if (sprite != null)
                 PlayState.instance.insert(index, sprite);
         });
-        createSameCode(["setProperty", "setLuaProperty"], function (tag:String, value:Dynamic) {
+        createFunction("setProperty", function (tag:String, value:Dynamic) {
             if (getTag(tag, "sprite") != null) {
                 var sprite:FunkSprite = getTag(tag, "sprite");
                 return Reflect.setProperty(sprite, tag, value);
@@ -63,7 +63,7 @@ class LuaScript {
                 }
             }
         });
-        createSameCode(["getProperty", "getLuaProperty"], function (tag:String, value:Dynamic) {
+        createFunction("getProperty", function (tag:String, value:Dynamic) {
             if (getTag(tag, "sprite") != null) {
                 var sprite:FunkSprite = getTag(tag, "sprite");
                 return Reflect.getProperty(sprite, value);
@@ -76,7 +76,7 @@ class LuaScript {
                 return null;
             }
         });
-        createSameCode(["setPosition", "setLuaPosition"], function (tag:String, x:Float, y:Float) {
+        createFunction("setPosition", function (tag:String, x:Float, y:Float) {
             if (getTag(tag, "sprite") != null) {
                 var sprite:FunkSprite = getTag(tag, "sprite");
                 sprite.setPosition(x, y);
@@ -93,7 +93,7 @@ class LuaScript {
                 }
             }
         });
-        createSameCode(["setScale", "setLuaScale"], function (tag:String, x:Float, y:Float) {
+        createFunction("setScale", function (tag:String, x:Float, y:Float) {
             if (getTag(tag, "sprite") != null) {
                 var sprite:FunkSprite = getTag(tag, "sprite");
                 sprite.scale.set(x, y);
@@ -119,14 +119,12 @@ class LuaScript {
     }
 
     // Toolkit
-    public function createSameCode(name:Array<String>, code:Dynamic) {
-        for (i in name)
-            return LuaUtils.addFunction(vm, i, code);
+    public function createFunction(name:String, code:Dynamic) {
+        return LuaUtils.addFunction(vm, name, code);
     }
 
-    public function createSameVariable(name:Array<String>, value:Dynamic) {
-        for (i in name)
-            return LuaUtils.setVariable(vm, i, value);
+    public function setVariable(name:String, value:Dynamic) {
+        return LuaUtils.setVariable(vm, name, value);
     }
 
     public function setTag(tag:String, whatIs:String, variable:Dynamic) {
@@ -148,9 +146,7 @@ class LuaScript {
         return null;
     }
 
-    public function createSameFunction(name:Array<String>, code:Array<Dynamic>) {
-        for (i in name)
-            return LuaUtils.callFunctionByName(vm, i, code);
-        return null;
+    public function callFunction(name:String, code:Array<Dynamic>) {
+        return LuaUtils.callFunctionByName(vm, name, code);
     }
 }

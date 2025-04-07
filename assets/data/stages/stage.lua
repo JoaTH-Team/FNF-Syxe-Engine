@@ -1,4 +1,4 @@
-function onCreate()
+function create()
     defaultZoom = 0.9
     curStage = "stage"
 
