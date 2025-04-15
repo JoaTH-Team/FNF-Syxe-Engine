@@ -1,5 +1,6 @@
 package backend.scripts;
 
+import flixel.FlxCamera;
 import flixel.text.FlxText;
 import flixel.FlxG;
 import haxe.Exception;
@@ -101,8 +102,52 @@ class LuaScript {
                 text.active = true;
                 PlayState.modsText.set(tag, text);
             });
+            setCallback("setText", function (tag:String, text:String) {
+                if (PlayState.modsText.exists(tag)) {
+                    var textObj = PlayState.modsText.get(tag);
+                    textObj.text = text;
+                }
+
+                var props:Array<String> = tag.split('.');
+                var target:Dynamic = FlxG.state;
+                
+                if (props.length == 1)
+                    target = Reflect.getProperty(target, tag);
+                else {
+                    for (i in 0...props.length - 1)
+                        target = Reflect.getProperty(target, props[i]);
+                    target = Reflect.getProperty(target, props[props.length - 1]);
+                }
+
+                if (target != null) {
+                    target.text = text;
+                }
+            });
         }
         initText();
+
+        function initCamera() {
+            setCallback("createCamera", function (tag:String, ?pos:Array<Float>, ?window:Array<Int>, ?zoom:Float = 0) {
+                if (window == null) window = [0, 0];
+                if (pos == null) pos = [0, 0];
+                var camera = new FlxCamera(pos[0], pos[1], window[0], window[1], zoom);
+                camera.active = true;
+                PlayState.modsCamera.set(tag, camera);
+            });
+            setCallback("addCamera", function (tag:String, drawDefault:Bool = false) {
+                if (PlayState.modsCamera.exists(tag)) {
+                    var camera = PlayState.modsCamera.get(tag);
+                    FlxG.cameras.add(camera, drawDefault);
+                }
+            });
+            setCallback("removeCamera", function (tag:String, destroy:Bool = true) {
+                if (PlayState.modsCamera.exists(tag)) {
+                    var camera = PlayState.modsCamera.get(tag);
+                    FlxG.cameras.remove(camera, destroy);
+                }
+            });
+        }
+        initCamera();
 
         function initObject() {
             setCallback("add", function (tag:String, pos:Int = 0) {
@@ -187,6 +232,33 @@ class LuaScript {
                 if (target != null) {
                     target.scale.x = scale[0];
                     target.scale.y = scale[1];
+                }
+            });
+            setCallback("setScrollFactor", function (tag:String, scrollFactor:Array<Float>) {
+                if (PlayState.modsSprite.exists(tag)) {
+                    var sprite = PlayState.modsSprite.get(tag);
+                    sprite.scrollFactor.set(scrollFactor[0], scrollFactor[1]);
+                    return;
+                } else if (PlayState.modsText.exists(tag)) {
+                    var text = PlayState.modsText.get(tag);
+                    text.scrollFactor.set(scrollFactor[0], scrollFactor[1]);
+                    return;
+                }
+
+                var props:Array<String> = tag.split('.');
+                var target:Dynamic = FlxG.state;
+                
+                if (props.length == 1)
+                    target = Reflect.getProperty(target, tag);
+                else {
+                    for (i in 0...props.length - 1)
+                        target = Reflect.getProperty(target, props[i]);
+                    target = Reflect.getProperty(target, props[props.length - 1]);
+                }
+
+                if (target != null) {
+                    target.scrollFactor.x = scrollFactor[0];
+                    target.scrollFactor.y = scrollFactor[1];
                 }
             });
             setCallback("setAlpha", function (tag:String, alpha:Float) {

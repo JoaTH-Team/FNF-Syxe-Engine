@@ -100,6 +100,7 @@ class PlayState extends MusicBeatState
 	public static var instance:PlayState = null;
 	public static var modsSprite:Map<String, FunkSprite> = new Map<String, FunkSprite>();
 	public static var modsText:Map<String, FlxText> = new Map<String, FlxText>();
+	public static var modsCamera:Map<String, FlxCamera> = new Map<String, FlxCamera>();
 
 	public var luaArray:Array<LuaScript> = [];
 	
@@ -158,22 +159,6 @@ class PlayState extends MusicBeatState
 		getStage(curStage);
 
 		var gfVersion:String = 'gf';
-
-		switch (curStage)
-		{
-			case 'limo':
-				gfVersion = 'gf-car';
-			case 'mall' | 'mallEvil':
-				gfVersion = 'gf-christmas';
-			case 'school':
-				gfVersion = 'gf-pixel';
-			case 'schoolEvil':
-				gfVersion = 'gf-pixel';
-		}
-
-		if (curStage == 'limo')
-			gfVersion = 'gf-car';
-
 		gf = new Character(400, 130, gfVersion);
 		gf.scrollFactor.set(0.95, 0.95);
 
