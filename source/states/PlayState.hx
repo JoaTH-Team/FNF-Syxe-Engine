@@ -1,7 +1,7 @@
 package states;
 
-import sys.FileSystem;
 import backend.scripts.LuaScript;
+import sys.FileSystem;
 import backend.game.FunkSprite;
 import backend.chart.Song;
 import objects.Note;
@@ -99,37 +99,39 @@ class PlayState extends MusicBeatState
 
 	public static var instance:PlayState = null;
 	public static var modsSprite:Map<String, FunkSprite> = new Map<String, FunkSprite>();
+	public static var modsText:Map<String, FlxText> = new Map<String, FlxText>();
 
-	public static var luaArray:Array<LuaScript> = [];
-
-	function setDaFunction(name:String, code:Array<Dynamic>) {
-		for (script in luaArray) {
-			script.createFunction(name, code);
+	public var luaArray:Array<LuaScript> = [];
+	
+	function callOnScripts(lotName:String, args:Array<Dynamic>):Void
+	{
+		for (i in 0...luaArray.length) {
+			var returnVal:Dynamic = LuaScript.Function_Continue;
+			for (i in 0...luaArray.length) {
+				var ret:Dynamic = luaArray[i].callFunction(lotName, args);
+				if(ret != LuaScript.Function_Continue) {
+					returnVal = ret;
+				}
+			}
 		}
 	}
 
-	function setDaVariable(name:String, value:Dynamic) {
-		for (script in luaArray) {
-			script.setVariable(name, value);
-		}
-	}
-
-	function createStage(name:String) {
-		luaArray.push(new LuaScript(Paths.data('stages/$name')));
+	function getStage(name:String):LuaScript {
+	    var script = new LuaScript(Paths.data("stages/" + name + ".lua"));
+	    luaArray.push(script);
+	    return script;
 	}
 
 	override public function create()
 	{
 		instance = this;
 
-		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(camGame);
-		FlxG.cameras.add(camHUD);
-		FlxG.cameras.setDefaultDrawTarget(camGame, false);
+		FlxG.cameras.add(camHUD, false);
 
 		persistentUpdate = true;
 		persistentDraw = true;
@@ -140,7 +142,7 @@ class PlayState extends MusicBeatState
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
 
-		var foldersToCheck:Array<String> = [Paths.file('scripts/')];
+		var foldersToCheck:Array<String> = [Paths.data('scripts/')];
 		for (folder in foldersToCheck) {
 			if (FileSystem.exists(folder) && FileSystem.isDirectory(folder)) {
 				for (file in FileSystem.readDirectory(folder)) {
@@ -151,13 +153,9 @@ class PlayState extends MusicBeatState
 			}
 		}
 
-		setDaFunction("create", []);
+		callOnScripts('create', []);
 
-		if (curStage == null) {
-			createStage("stage");
-		} else {
-			createStage(curStage.toLowerCase());
-		}
+		getStage(curStage);
 
 		var gfVersion:String = 'gf';
 
@@ -654,6 +652,8 @@ class PlayState extends MusicBeatState
 		#end
 
 		super.update(elapsed);
+
+		callOnScripts('update', [elapsed]);
 
 		scoreTxt.text = "Score:" + songScore;
 

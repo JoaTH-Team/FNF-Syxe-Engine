@@ -1,152 +1,286 @@
 package backend.scripts;
 
+import flixel.text.FlxText;
+import flixel.FlxG;
+import haxe.Exception;
 import states.PlayState;
 import backend.game.FunkSprite;
-import hxluajit.Lua;
-import hxluajit.wrapper.LuaUtils;
-import hxluajit.LuaL;
-import hxluajit.Types.Lua_State;
-import cpp.RawPointer;
-import flixel.FlxG;
+import openfl.Lib;
+import llua.Convert;
+import llua.Lua;
+import llua.LuaL;
+import llua.State;
 
 class LuaScript {
-    public static var vm:Null<RawPointer<Lua_State>> = null;
+    public static var Function_Stop = 1;
+	public static var Function_Continue = 0;
 
-    public function executeFile(file:String) {
+	public static var lua:State;
+    private var initialized:Bool = false;
+
+	public function new(file:String) {
         try {
-            LuaUtils.doFile(vm, Paths.data('$file.lua'));
-            trace('Executed $file.lua');
-            return null; // for nothing
-        } catch (e:Dynamic) {
-            trace('Error executing $file.lua: $e');
-            return null;
-        }
-    }
-    
-    public function new(file:String) {
-        vm = LuaL.newstate();
-        LuaL.openlibs(vm);
+            lua = LuaL.newstate();
+            if (lua == null) {
+                trace('Failed to create Lua state');
+                return;
+            }
 
-        executeFile(file);
+            LuaL.openlibs(lua);
+            Lua.init_callbacks(lua);
+
+            // Load and run the file
+            var status:Int = LuaL.dofile(lua, file);
+            if (status != 0) {
+                var error:String = Lua.tostring(lua, -1);
+                Lua.pop(lua, 1);
+                throw new Exception('Failed to load Lua file: $error');
+            }
+
+            initialized = true;
+            setupCallbacks();
+
+            trace('Lua file loaded successfully: $file');
+            
+            if (initialized)
+                callFunction('create', []);
+
+        } catch (e) {
+            trace('Lua Error: ' + e.message);
+            Lib.application.window.alert(e.message, "Error!");
+            cleanup();
+        }
+	}
+
+    // Okay so this one is a bit weird, but it works. It sets up the callbacks for the Lua functions
+    private function setupCallbacks():Void {
+        function initMain() {
+            setCallback("trace", function(value:Dynamic) {
+                trace(value);
+            });
+            setCallback("setProperty", function (tag:String, value:Dynamic) {
+                var props:Array<String> = tag.split('.');
+                var target:Dynamic = FlxG.state;
+                
+                if(props.length == 1)
+                return Reflect.setProperty(target, tag, value);
+                
+                for (i in 0...props.length - 1)
+                target = Reflect.getProperty(target, props[i]);
+                
+                return Reflect.setProperty(target, props[props.length - 1], value);
+            });
+            setCallback("getProperty", function (tag:String) {
+                var props:Array<String> = tag.split('.');
+                var target:Dynamic = FlxG.state;
+                
+                if(props.length == 1)
+                return Reflect.getProperty(target, tag);
+                
+                for (i in 0...props.length - 1)
+                target = Reflect.getProperty(target, props[i]);
+                
+                return Reflect.getProperty(target, props[props.length - 1]);
+            });
+        }
+        initMain();
+
+        function initSprite() {
+            setCallback("createSprite", function (tag:String, pos:Array<Float>, paths:String) {
+                var sprite = new FunkSprite(pos[0], pos[1]);
+                sprite.loadGraphic(Paths.image(paths));
+                sprite.active = true;
+                PlayState.modsSprite.set(tag, sprite);
+            });
+        }
+        initSprite();
+
+        function initText() {
+            setCallback("createText", function (tag:String, pos:Array<Float>, text:String) {
+                var text = new FlxText(pos[0], pos[1], 0, text);
+                text.active = true;
+                PlayState.modsText.set(tag, text);
+            });
+        }
+        initText();
+
+        function initObject() {
+            setCallback("add", function (tag:String, pos:Int = 0) {
+                if (PlayState.modsSprite.exists(tag)) {
+                    var sprite = PlayState.modsSprite.get(tag);
+                    if (pos == 0)
+                        PlayState.instance.add(sprite);
+                    else
+                        PlayState.instance.insert(pos, sprite);
+                    return;
+                } else if (PlayState.modsText.exists(tag)) {
+                    var text = PlayState.modsText.get(tag);
+                    if (pos == 0)
+                        PlayState.instance.add(text);
+                    else
+                        PlayState.instance.insert(pos, text);
+                    return;
+                }
+            });
+            setCallback("remove", function (tag:String, splice:Bool = false) {
+                if (PlayState.modsSprite.exists(tag)) {
+                    var sprite = PlayState.modsSprite.get(tag);
+                    PlayState.instance.remove(sprite, splice);
+                    PlayState.modsSprite.remove(tag);
+                    return;
+                } else if (PlayState.modsText.exists(tag)) {
+                    var text = PlayState.modsText.get(tag);
+                    PlayState.instance.remove(text, splice);
+                    PlayState.modsText.remove(tag);
+                    return;
+                }
+            });
+            setCallback("setPosition", function (tag:String, pos:Array<Float>) {
+                if (PlayState.modsSprite.exists(tag)) {
+                    var sprite = PlayState.modsSprite.get(tag);
+                    sprite.setPosition(pos[0], pos[1]);
+                    return;
+                } else if (PlayState.modsText.exists(tag)) {
+                    var text = PlayState.modsText.get(tag);
+                    text.setPosition(pos[0], pos[1]);
+                    return;
+                }
+
+                var props:Array<String> = tag.split('.');
+                var target:Dynamic = FlxG.state;
+                
+                if (props.length == 1)
+                    target = Reflect.getProperty(target, tag);
+                else {
+                    for (i in 0...props.length - 1)
+                        target = Reflect.getProperty(target, props[i]);
+                    target = Reflect.getProperty(target, props[props.length - 1]);
+                }
+
+                if (target != null) {
+                    target.x = pos[0];
+                    target.y = pos[1];
+                }
+            });
+            setCallback("setScale", function (tag:String, scale:Array<Float>) {
+                if (PlayState.modsSprite.exists(tag)) {
+                    var sprite = PlayState.modsSprite.get(tag);
+                    sprite.scale.set(scale[0], scale[1]);
+                    return;
+                } else if (PlayState.modsText.exists(tag)) {
+                    var text = PlayState.modsText.get(tag);
+                    text.scale.set(scale[0], scale[1]);
+                    return;
+                }
+
+                var props:Array<String> = tag.split('.');
+                var target:Dynamic = FlxG.state;
+                
+                if (props.length == 1)
+                    target = Reflect.getProperty(target, tag);
+                else {
+                    for (i in 0...props.length - 1)
+                        target = Reflect.getProperty(target, props[i]);
+                    target = Reflect.getProperty(target, props[props.length - 1]);
+                }
+
+                if (target != null) {
+                    target.scale.x = scale[0];
+                    target.scale.y = scale[1];
+                }
+            });
+            setCallback("setAlpha", function (tag:String, alpha:Float) {
+                if (PlayState.modsSprite.exists(tag)) {
+                    var sprite = PlayState.modsSprite.get(tag);
+                    sprite.alpha = alpha;
+                    return;
+                } else if (PlayState.modsText.exists(tag)) {
+                    var text = PlayState.modsText.get(tag);
+                    text.alpha = alpha;
+                    return;
+                }
+
+                var props:Array<String> = tag.split('.');
+                var target:Dynamic = FlxG.state;
+                
+                if (props.length == 1)
+                    target = Reflect.getProperty(target, tag);
+                else {
+                    for (i in 0...props.length - 1)
+                        target = Reflect.getProperty(target, props[i]);
+                    target = Reflect.getProperty(target, props[props.length - 1]);
+                }
+
+                if (target != null) {
+                    target.alpha = alpha;
+                }
+            });
+        }
+        initObject();
+
+		callFunction('create', []);
+    }
+
+    public function callFunction(lotName:String, args:Array<Dynamic>):Dynamic {
+        if (!initialized || lua == null) return null;
         
-        // Whole Code
-        createFunction("createSprite", function (tag:String, x:Float = 0, y:Float = 0, paths:String = null) {
-            var sprite:FunkSprite = new FunkSprite(x, y);
-            sprite.loadGraphic(Paths.image(paths));
-            sprite.active = true;
-            setTag(tag, "sprite", sprite);
-        });
-        createFunction("addSprite", function (tag:String) {
-            var sprite:FunkSprite = getTag(tag, "sprite");
-            if (sprite != null)
-                PlayState.instance.add(sprite);
-        });
-        createFunction("removeSprite", function (tag:String) {
-            var sprite:FunkSprite = getTag(tag, "sprite");
-            if (sprite != null)
-                PlayState.instance.remove(sprite);
-        });
-        createFunction("insertSprite", function (tag:String, index:Int) {
-            var sprite:FunkSprite = getTag(tag, "sprite");
-            if (sprite != null)
-                PlayState.instance.insert(index, sprite);
-        });
-        createFunction("setProperty", function (tag:String, value:Dynamic) {
-            if (getTag(tag, "sprite") != null) {
-                var sprite:FunkSprite = getTag(tag, "sprite");
-                return Reflect.setProperty(sprite, tag, value);
-            } else {
-                var state = FlxG.state;
-                if (Std.isOfType(state, states.PlayState)) {
-                    var playState:states.PlayState = cast state;
-                    return Reflect.setProperty(playState, tag, value);
-                }
+        try {
+            if(lua == null) {
+                return Function_Continue;
             }
-        });
-        createFunction("getProperty", function (tag:String, value:Dynamic) {
-            if (getTag(tag, "sprite") != null) {
-                var sprite:FunkSprite = getTag(tag, "sprite");
-                return Reflect.getProperty(sprite, value);
-            } else {
-                var state = FlxG.state;
-                if (Std.isOfType(state, states.PlayState)) {
-                    var playState:states.PlayState = cast state;
-                    return Reflect.getProperty(playState, tag);
-                }
-                return null;
+    
+            Lua.getglobal(lua, lotName);
+    
+            for (arg in args) {
+                Convert.toLua(lua, arg);
             }
-        });
-        createFunction("setPosition", function (tag:String, x:Float, y:Float) {
-            if (getTag(tag, "sprite") != null) {
-                var sprite:FunkSprite = getTag(tag, "sprite");
-                sprite.setPosition(x, y);
-            } else {
-                var state = FlxG.state;
-                if (Std.isOfType(state, states.PlayState)) {
-                    var playState:states.PlayState = cast state;
-                    if (Reflect.hasField(playState, tag)) {
-                        var obj = Reflect.getProperty(playState, tag);
-                        if (Reflect.hasField(obj, "setPosition")) {
-                            Reflect.callMethod(obj, Reflect.field(obj, "setPosition"), [x, y]);
-                        }
+    
+            var result:Null<Int> = Lua.pcall(lua, args.length, 1, 0);
+            if(result != null && resultIsAllowed(lua, result)) {
+                /*var resultStr:String = Lua.tostring(lua, result);
+                var error:String = Lua.tostring(lua, -1);
+                Lua.pop(lua, 1);*/
+                if(Lua.type(lua, -1) == Lua.LUA_TSTRING) {
+                    var error:String = Lua.tostring(lua, -1);
+                    if(error == 'attempt to call a nil value') { //Makes it ignore warnings and not break stuff if you didn't put the functions on your lua file
+                        return Function_Continue;
                     }
                 }
+                var conv:Dynamic = Convert.fromLua(lua, result);
+                //Lua.pop(lua, 1);
+                return conv;
             }
-        });
-        createFunction("setScale", function (tag:String, x:Float, y:Float) {
-            if (getTag(tag, "sprite") != null) {
-                var sprite:FunkSprite = getTag(tag, "sprite");
-                sprite.scale.set(x, y);
-                return sprite.scale;
-            } else {
-                var state = FlxG.state;
-                if (Std.isOfType(state, states.PlayState)) {
-                    var playState:states.PlayState = cast state;
-                    if (Reflect.hasField(playState, tag)) {
-                        var obj = Reflect.getProperty(playState, tag);
-                        if (Reflect.hasField(obj, "scale")) {
-                            Reflect.setProperty(obj, "scale", new flixel.math.FlxPoint(x, y));
-                            return Reflect.getProperty(obj, "scale");
-                        }
-                    }
-                }
-            }
+            return Function_Continue;
+
+        } catch (e) {
+            trace('Error calling Lua function $lotName: ${e.message}');
             return null;
-        });
-
-        Lua.close(vm);
-        vm = null;
-    }
-
-    // Toolkit
-    public function createFunction(name:String, code:Dynamic) {
-        return LuaUtils.addFunction(vm, name, code);
-    }
-
-    public function setVariable(name:String, value:Dynamic) {
-        return LuaUtils.setVariable(vm, name, value);
-    }
-
-    public function setTag(tag:String, whatIs:String, variable:Dynamic) {
-        switch (whatIs) {
-            case "sprite":
-                return PlayState.modsSprite.set(tag, variable);
         }
     }
 
-    public function getTag(tag:String, whatIs:String) {
-        switch (whatIs) {
-            case "sprite":
-                if (!PlayState.modsSprite.exists(tag)) {
-                    trace('Not found $tag in $whatIs');
-                    return null;
-                }
-                return PlayState.modsSprite.get(tag);
+    function resultIsAllowed(leLua:State, leResult:Null<Int>) { //Makes it ignore warnings
+		switch(Lua.type(leLua, leResult)) {
+			case Lua.LUA_TNIL | Lua.LUA_TBOOLEAN | Lua.LUA_TNUMBER | Lua.LUA_TSTRING | Lua.LUA_TTABLE:
+				return true;
+		}
+		return false;
+	}
+
+    public function setCallback(lotName:String, func:Dynamic):Bool {
+        if (!initialized || lua == null) return false;
+        try {
+            return Lua_helper.add_callback(lua, lotName, func);
+        } catch (e) {
+            trace('Error setting callback $lotName: ${e.message}');
+            return false;
         }
-        return null;
     }
 
-    public function callFunction(name:String, code:Array<Dynamic>) {
-        return LuaUtils.callFunctionByName(vm, name, code);
+    public function cleanup() {
+        if (lua != null) {
+            Lua.close(lua);
+            lua = null;
+        }
+        initialized = false;
     }
 }
