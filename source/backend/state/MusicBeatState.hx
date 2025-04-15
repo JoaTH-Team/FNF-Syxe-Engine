@@ -2,7 +2,6 @@ package backend.state;
 
 import backend.chart.Conductor.BPMChangeEvent;
 import backend.chart.Conductor;
-import backend.game.FunkGame;
 import flixel.addons.ui.FlxUIState;
 
 class MusicBeatState extends FlxUIState
@@ -15,7 +14,6 @@ class MusicBeatState extends FlxUIState
 		super.create();
 
 		Paths.cleanMemory();
-		FunkGame.clearVariable();
 	}
 
 	override function update(elapsed:Float)
