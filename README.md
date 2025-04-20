@@ -1,13 +1,7 @@
-# FNF Syxe Engine (W.I.P)
+# FNF Syxe Engine (CANCEL)
 
-A small FNF Engine
+Yes, that right, this engine will gonna cancelled
 
-This readme still wip, subject can be change from the future
+actually, i am gonna reworked the engine to a better, slightly cooler
 
-## Feature
-
-- Simple Source: Im organize source code for better and easy to working
-- Only Week 1: This engine only contains week 1, mean the source is very lightweight
-- Scripting: This engine contains scripting stuff such as hscript and lua
-- Modding System: This engine is able to modding from the mods folder!
-- Use `.txt` file: Mod character, add song/week and stuff by using `.txt` file
+Check to the [FNF Reworked Engine](https://github.com/JoaTH-Team/FNF-Reworked-Engine)
