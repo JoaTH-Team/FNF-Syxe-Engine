@@ -1,5 +1,6 @@
 package backend.scripts;
 
+import flixel.util.FlxColor;
 import flixel.FlxCamera;
 import flixel.text.FlxText;
 import flixel.FlxG;
@@ -54,170 +55,141 @@ class LuaScript {
 	}
 
     // Okay so this one is a bit weird, but it works. It sets up the callbacks for the Lua functions
+    // functions inside function, funni
     private function setupCallbacks():Void {
-        function initMain() {
-            setCallback("trace", function(value:Dynamic) {
-                trace(value);
-            });
-            setCallback("setProperty", function (tag:String, value:Dynamic) {
-                var props:Array<String> = tag.split('.');
-                var target:Dynamic = FlxG.state;
-                
-                if(props.length == 1)
-                return Reflect.setProperty(target, tag, value);
-                
-                for (i in 0...props.length - 1)
-                target = Reflect.getProperty(target, props[i]);
-                
-                return Reflect.setProperty(target, props[props.length - 1], value);
-            });
-            setCallback("getProperty", function (tag:String) {
-                var props:Array<String> = tag.split('.');
-                var target:Dynamic = FlxG.state;
-                
-                if(props.length == 1)
-                return Reflect.getProperty(target, tag);
-                
-                for (i in 0...props.length - 1)
-                target = Reflect.getProperty(target, props[i]);
-                
-                return Reflect.getProperty(target, props[props.length - 1]);
-            });
-        }
-        initMain();
+        function onMain() {
+            setCallback("setProperty", function(variable:String, value:Dynamic) {
+                var arrayKill:Array<String> = variable.split('.');
+                if (arrayKill.length > 1) {
+                    var coverPass:Dynamic = null;
+                    if (PlayState.modsSprite.exists(arrayKill[0])) {
+                        coverPass = PlayState.modsSprite.get(arrayKill[0]);
+                    } else if (PlayState.modsText.exists(arrayKill[0])) {
+                        coverPass = PlayState.modsText.get(arrayKill[0]);
+                    } else if (PlayState.modsCamera.exists(arrayKill[0])) {
+                        coverPass = PlayState.modsCamera.get(arrayKill[0]);
+                    } else {
+                        coverPass = Reflect.getProperty(PlayState.instance, arrayKill[0]);
+                    }
 
-        function initSprite() {
-            setCallback("createSprite", function (tag:String, pos:Array<Float>, paths:String) {
-                var sprite = new FunkSprite(pos[0], pos[1]);
-                sprite.loadGraphic(Paths.image(paths));
-                sprite.active = true;
-                PlayState.modsSprite.set(tag, sprite);
+                    for (i in 1...arrayKill.length - 1) {
+                        coverPass = Reflect.getProperty(coverPass, arrayKill[i]);
+                    }
+                    return Reflect.setProperty(coverPass, arrayKill[arrayKill.length - 1], value);
+                }
+                return Reflect.setProperty(PlayState.instance, variable, value);
             });
-        }
-        initSprite();
+            setCallback("getProperty", function(variable:String) {
+                var arrayKill:Array<String> = variable.split('.');
+                if (arrayKill.length > 1) {
+                    var coverPass:Dynamic = null;
+                    if (PlayState.modsSprite.exists(arrayKill[0])) {
+                        coverPass = PlayState.modsSprite.get(arrayKill[0]);
+                    } else if (PlayState.modsText.exists(arrayKill[0])) {
+                        coverPass = PlayState.modsText.get(arrayKill[0]);
+                    } else if (PlayState.modsCamera.exists(arrayKill[0])) {
+                        coverPass = PlayState.modsCamera.get(arrayKill[0]);
+                    } else {
+                        coverPass = Reflect.getProperty(PlayState.instance, arrayKill[0]);
+                    }
 
-        function initText() {
-            setCallback("createText", function (tag:String, pos:Array<Float>, text:String) {
-                var text = new FlxText(pos[0], pos[1], 0, text);
-                text.active = true;
-                PlayState.modsText.set(tag, text);
+                    for (i in 1...arrayKill.length - 1) {
+                        coverPass = Reflect.getProperty(coverPass, arrayKill[i]);
+                    }
+                    return Reflect.getProperty(coverPass, arrayKill[arrayKill.length - 1]);
+                }
+                return Reflect.getProperty(PlayState.instance, variable);
             });
-        }
-        initText();
-
-        function initObject() {
-            setCallback("add", function (tag:String, pos:Int = 0) {
+            setCallback("add", function (tag:String) {
                 if (PlayState.modsSprite.exists(tag)) {
-                    var sprite = PlayState.modsSprite.get(tag);
-                    if (pos == 0)
-                        PlayState.instance.add(sprite);
-                    else
-                        PlayState.instance.insert(pos, sprite);
-                    return;
+                    var sprite:FunkSprite = PlayState.modsSprite.get(tag);
+                    FlxG.state.add(sprite);
                 } else if (PlayState.modsText.exists(tag)) {
-                    var text = PlayState.modsText.get(tag);
-                    if (pos == 0)
-                        PlayState.instance.add(text);
-                    else
-                        PlayState.instance.insert(pos, text);
-                    return;
+                    var text:FlxText = PlayState.modsText.get(tag);
+                    FlxG.state.add(text);
+                } else if (PlayState.modsCamera.exists(tag)) {
+                    var camera:FlxCamera = PlayState.modsCamera.get(tag);
+                    FlxG.state.add(camera);
                 }
             });
-            setCallback("remove", function (tag:String, splice:Bool = false) {
+            setCallback("remove", function (tag:String, spliceMe:Bool = false) {
                 if (PlayState.modsSprite.exists(tag)) {
-                    var sprite = PlayState.modsSprite.get(tag);
-                    PlayState.instance.remove(sprite, splice);
+                    var sprite:FunkSprite = PlayState.modsSprite.get(tag);
                     PlayState.modsSprite.remove(tag);
-                    return;
+                    FlxG.state.remove(sprite, spliceMe);
                 } else if (PlayState.modsText.exists(tag)) {
-                    var text = PlayState.modsText.get(tag);
-                    PlayState.instance.remove(text, splice);
+                    var text:FlxText = PlayState.modsText.get(tag);
                     PlayState.modsText.remove(tag);
-                    return;
-                }
-            });
-            setCallback("setPosition", function (tag:String, pos:Array<Float>) {
-                if (PlayState.modsSprite.exists(tag)) {
-                    var sprite = PlayState.modsSprite.get(tag);
-                    sprite.setPosition(pos[0], pos[1]);
-                    return;
-                } else if (PlayState.modsText.exists(tag)) {
-                    var text = PlayState.modsText.get(tag);
-                    text.setPosition(pos[0], pos[1]);
-                    return;
-                }
-
-                var props:Array<String> = tag.split('.');
-                var target:Dynamic = FlxG.state;
-                
-                if (props.length == 1)
-                    target = Reflect.getProperty(target, tag);
-                else {
-                    for (i in 0...props.length - 1)
-                        target = Reflect.getProperty(target, props[i]);
-                    target = Reflect.getProperty(target, props[props.length - 1]);
-                }
-
-                if (target != null) {
-                    target.x = pos[0];
-                    target.y = pos[1];
-                }
-            });
-            setCallback("setScale", function (tag:String, scale:Array<Float>) {
-                if (PlayState.modsSprite.exists(tag)) {
-                    var sprite = PlayState.modsSprite.get(tag);
-                    sprite.scale.set(scale[0], scale[1]);
-                    return;
-                } else if (PlayState.modsText.exists(tag)) {
-                    var text = PlayState.modsText.get(tag);
-                    text.scale.set(scale[0], scale[1]);
-                    return;
-                }
-
-                var props:Array<String> = tag.split('.');
-                var target:Dynamic = FlxG.state;
-                
-                if (props.length == 1)
-                    target = Reflect.getProperty(target, tag);
-                else {
-                    for (i in 0...props.length - 1)
-                        target = Reflect.getProperty(target, props[i]);
-                    target = Reflect.getProperty(target, props[props.length - 1]);
-                }
-
-                if (target != null) {
-                    target.scale.x = scale[0];
-                    target.scale.y = scale[1];
-                }
-            });
-            setCallback("setAlpha", function (tag:String, alpha:Float) {
-                if (PlayState.modsSprite.exists(tag)) {
-                    var sprite = PlayState.modsSprite.get(tag);
-                    sprite.alpha = alpha;
-                    return;
-                } else if (PlayState.modsText.exists(tag)) {
-                    var text = PlayState.modsText.get(tag);
-                    text.alpha = alpha;
-                    return;
-                }
-
-                var props:Array<String> = tag.split('.');
-                var target:Dynamic = FlxG.state;
-                
-                if (props.length == 1)
-                    target = Reflect.getProperty(target, tag);
-                else {
-                    for (i in 0...props.length - 1)
-                        target = Reflect.getProperty(target, props[i]);
-                    target = Reflect.getProperty(target, props[props.length - 1]);
-                }
-
-                if (target != null) {
-                    target.alpha = alpha;
+                    FlxG.state.remove(text, spliceMe);
+                } else if (PlayState.modsCamera.exists(tag)) {
+                    var camera:FlxCamera = PlayState.modsCamera.get(tag);
+                    PlayState.modsCamera.remove(tag);
+                    FlxG.state.remove(camera, spliceMe);
                 }
             });
         }
-        initObject();
+        onMain();
+
+        // Sprite creation and management
+        function onSprite() {
+            setCallback("createSprite", function(tag:String, x:Float, y:Float, imagePath:String) {
+                if (!PlayState.modsSprite.exists(tag)) {
+                    var sprite = new FunkSprite(x, y);
+                    try {
+                        sprite.loadGraphic(Paths.image(imagePath));
+                        sprite.active = true;
+                        PlayState.modsSprite.set(tag, sprite);
+                        return true;
+                    } catch (e) {
+                        trace('Error creating sprite $tag: ${e.message}');
+                        return false;
+                    }
+                }
+                return false;
+            });
+        }
+        onSprite();
+
+        // Text creation and management
+        function onText() {
+            setCallback("createText", function(tag:String, x:Float, y:Float, width:Float, size:Int, color:String, content:String) {
+                if (!PlayState.modsText.exists(tag)) {
+                    try {
+                        var textObj = new FlxText(x, y, Std.int(width), content);
+                        textObj.setFormat(Paths.font("vcr.ttf"), size, FlxColor.fromString(color));
+                        textObj.active = true;
+                        PlayState.modsText.set(tag, textObj);
+                        return true;
+                    } catch (e) {
+                        trace('Error creating text $tag: ${e.message}');
+                        return false;
+                    }
+                }
+                return false;
+            });
+        }
+        onText();
+
+        // Camera creation and management 
+        function onCamera() {
+            setCallback("createCamera", function(tag:String, ?x:Float = 0, ?y:Float = 0, ?width:Float = 0, ?height:Float = 0) {
+                if (!PlayState.modsCamera.exists(tag)) {
+                    try {
+                        var camera = new FlxCamera(Std.int(x), Std.int(y), 
+                            Std.int(width == 0 ? FlxG.width : width), 
+                            Std.int(height == 0 ? FlxG.height : height));
+                        camera.active = true;
+                        PlayState.modsCamera.set(tag, camera);
+                        return true;
+                    } catch (e) {
+                        trace('Error creating camera $tag: ${e.message}');
+                        return false;
+                    }
+                }
+                return false;
+            });
+        }
+        onCamera();
 
 		callFunction('create', []);
     }
