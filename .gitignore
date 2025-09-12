@@ -1,3 +1,5 @@
 .haxelib/
 .haxelsp/recording/
 dump/
+export/*
+.vscode/*

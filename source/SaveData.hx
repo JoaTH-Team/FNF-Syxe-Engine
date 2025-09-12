@@ -1,0 +1,34 @@
+package;
+
+import flixel.FlxG;
+
+@:structInit class SaveSettings {
+    // gameplay
+    public var ghosttap:Bool = true;
+    public var downscroll:Bool = false;
+
+    // controls
+    public var keyboard:Array<String> = ["LEFT", "DOWN", "UP", "RIGHT"];
+}
+
+class SaveData {
+	public static var settings:SaveSettings = {};
+
+	public static function init() {
+		for (key in Reflect.fields(settings))
+			if (Reflect.field(FlxG.save.data, key) != null)
+				Reflect.setField(settings, key, Reflect.field(FlxG.save.data, key));
+	}
+
+	public static function saveSettings() {
+		for (key in Reflect.fields(settings))
+			Reflect.setField(FlxG.save.data, key, Reflect.field(settings, key));
+
+		FlxG.save.flush();
+	}
+
+	public static function eraseData() {
+		FlxG.save.erase();
+		init();
+	}
+}

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns="http://lime.openfl.org/project/1.0.4" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://lime.openfl.org/project/1.0.4 http://lime.openfl.org/xsd/project-1.0.4.xsd">
+
+	<!-- _________________________ Application Settings _________________________ -->
+
+	<app title="Friday Night Funkin': Syxe Engine" file="SyxeEngine" main="Main" version="0.0.1" company="Huy1234TH" />
+
+	<!--The flixel preloader is not accurate in Chrome. You can use it regularly if you embed the swf into a html file
+		or you can set the actual size of your file manually at "FlxPreloaderBase-onUpdate-bytesTotal"-->
+	<app preloader="flixel.system.FlxPreloader" />
+
+	<!--Minimum without FLX_NO_GAMEPAD: 11.8, without FLX_NO_NATIVE_CURSOR: 11.2-->
+	<set name="SWF_VERSION" value="11.8" />
+
+	<!-- ____________________________ Window Settings ___________________________ -->
+
+	<!--These window settings apply to all targets-->
+	<window width="1280" height="720" fps="60" background="#000000" hardware="true" vsync="false" />
+
+	<!--HTML5-specific-->
+	<window if="html5" resizable="true" />
+
+	<!--Desktop-specific-->
+	<window if="desktop" orientation="landscape" fullscreen="false" resizable="true" />
+
+	<!--Mobile-specific-->
+	<window if="mobile" orientation="landscape" fullscreen="true" width="0" height="0" />
+
+	<!-- _____________________________ Path Settings ____________________________ -->
+
+	<set name="BUILD_DIR" value="export/debug" if="debug" />
+	<set name="BUILD_DIR" value="export/release" unless="debug" />
+	<set name="BUILD_DIR" value="export/32bit" if="32bit" />
+
+	<source path="source" />
+	<assets path="assets" />
+
+	<!-- OpenAL config -->
+	<section if="desktop">
+		<assets path="alsoft.txt" rename="plugins/alsoft.ini" type="text" if="windows"/>
+		<assets path="alsoft.txt" rename="plugins/alsoft.conf" type="text" unless="windows"/>
+	</section>
+
+	<!-- _______________________________ Libraries ______________________________ -->
+
+	<!-- Flixel -->
+	<haxelib name="flixel" />
+	<haxelib name="flixel-modding" />
+	<haxelib name="flixel-addons" />
+	<haxelib name="flixel-waveform" />
+	<haxelib name="flixel-controls" />
+	<haxelib name="flxrhythmconductor" />
+
+	<!-- Crash Handler -->
+	<haxelib name="cataclysm" />
+
+	<!-- Video -->
+	<haxelib name="hxvlc" />
+
+	<!-- Audio -->
+	<haxelib name="grig.audio" />
+
+	<!-- ______________________________ Haxedefines _____________________________ -->
+
+	<!-- Flixel --> 
+	<haxedef name="FLX_NO_MOUSE" if="mobile" />
+	<haxedef name="FLX_NO_KEYBOARD" if="mobile" />
+	<haxedef name="FLX_NO_TOUCH" if="desktop" />
+	<haxedef name="FLX_NO_DEBUG" unless="debug" />
+
+	<!-- Nape -->
+	<haxedef name="NAPE_RELEASE_BUILD" unless="debug" />
+
+	<!-- Terminal -->
+	<haxedef name="message.reporting" value="pretty" />
+
+	<!-- _________________________________ Engine needed _______________________________ -->
+
+	<!-- Cataclysm need -->
+	<haxedef name="HXCPP_CHECK_POINTER" />
+	<haxedef name="HXCPP_CATCH_SEGV" />
+	<haxedef name="HXCPP_STACK_LINE" />
+	<haxedef name="HXCPP_STACK_TRACE" />
+	<haxedef name="openfl-enable-handle-error" />
+
+	<!-- Flixel Modding RuleScript need (ig) -->
+	<haxedef name="hscriptPos" />
+</project>
