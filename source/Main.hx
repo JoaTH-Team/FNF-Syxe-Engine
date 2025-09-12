@@ -14,6 +14,8 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
+		SaveData.init();
+
 		addChild(new FlxGame(0, 0, PlayState));
 
 		var crash_handler:Cataclysm = new Cataclysm();

@@ -1,14 +1,18 @@
 package;
 
+import flixel.FlxG;
 import flixel.FlxState;
 
 class MusicBeatState extends FlxState
 {
-    override function create() {
-        super.create();
-    }    
+	var controls:Controls;
 
-    override function update(elapsed:Float) {
-        super.update(elapsed);
+	public function new()
+	{
+		super();
+
+		// Controls Added
+		controls = new Controls("Main");
+		FlxG.inputs.addInput(controls);
     }
 }

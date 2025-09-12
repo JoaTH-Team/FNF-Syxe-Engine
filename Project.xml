@@ -58,9 +58,6 @@
 	<!-- Video -->
 	<haxelib name="hxvlc" />
 
-	<!-- Audio -->
-	<haxelib name="grig.audio" />
-
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
 	<!-- Flixel --> 
