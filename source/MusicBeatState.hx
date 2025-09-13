@@ -7,6 +7,9 @@ import flixel.addons.sound.FlxRhythmConductor;
 class MusicBeatState extends FlxState
 {
 	var controls:Controls;
+	var curBeat:Int = 0;
+	var curStep:Int = 0;
+
 	public function new()
 	{
 		super();
@@ -22,19 +25,26 @@ class MusicBeatState extends FlxState
 		Paths.clearUnusedMemory();
 		Paths.clearStoredMemory();
 	}
-	
-	override function update(elapsed:Float)
+
+	override function tryUpdate(elapsed:Float)
 	{
-		super.update(elapsed);
-	
-		stepHit();
+		super.tryUpdate(elapsed);
+		FlxRhythmConductor.instance.update(null);
+
+		FlxRhythmConductor.beatHit.add(function(time:Int, backward:Bool)
+		{
+			curBeat += time;
+			beatHit();
+		});
+
+		FlxRhythmConductor.stepHit.add(function(time:Int, backward:Bool)
+		{
+			curStep += time;
+			stepHit();
+		});
 	}
 
-	public function stepHit()
-	{
-		if (FlxRhythmConductor.instance.currentStep % 4 == 0)
-			beatHit();
-	}
+	public function stepHit() {}
 
 	public function beatHit() {}
 }

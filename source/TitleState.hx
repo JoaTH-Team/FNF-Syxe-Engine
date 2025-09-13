@@ -41,6 +41,9 @@ class TitleState extends MusicBeatState
 		super.beatHit();
 		dancedLeft = !dancedLeft;
 
-		gfDance.animation.play(dancedLeft ? "danceLeft" : "danceRight");
+		if (dancedLeft)
+			gfDance.animation.play("danceLeft", true);
+		else if (!dancedLeft)
+			gfDance.animation.play("danceRight", true);
 	}
 }
