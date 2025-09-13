@@ -24,24 +24,30 @@ class MusicBeatSubState extends FlxSubState
 
 		Paths.clearUnusedMemory();
 		Paths.clearStoredMemory();
-	
-		FlxRhythmConductor.beatHit.add(function(time:Int, backward:Bool)
-		{
-			curBeat += time;
-			beatHit();
-		});
 
-		FlxRhythmConductor.stepHit.add(function(time:Int, backward:Bool)
+		FlxRhythmConductor.reset();
+
+		if (FlxRhythmConductor.instance != null)
 		{
-			curStep += time;
-			stepHit();
-		});	
+			FlxRhythmConductor.beatHit.add(function(time:Int, backward:Bool)
+			{
+				curBeat += time;
+				beatHit();
+			});
+
+			FlxRhythmConductor.stepHit.add(function(time:Int, backward:Bool)
+			{
+				curStep += time;
+				stepHit();
+			});
+		}
 	}
 
 	override function tryUpdate(elapsed:Float)
 	{
 		super.tryUpdate(elapsed);
-		FlxRhythmConductor.instance.update(null);
+		if (FlxRhythmConductor.instance != null)
+			FlxRhythmConductor.instance.update(null);
 	}
 
 	public function stepHit() {}
