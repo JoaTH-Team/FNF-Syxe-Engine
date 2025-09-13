@@ -48,9 +48,13 @@
 	<haxelib name="flixel" />
 	<haxelib name="flixel-modding" />
 	<haxelib name="flixel-addons" />
+	<haxelib name="flixel-ui" />
 	<haxelib name="flixel-waveform" />
 	<haxelib name="flixel-controls" />
 	<haxelib name="flxrhythmconductor" />
+	
+	<!-- Scripting -->
+	<haxelib name="rulescript" />
 
 	<!-- Crash Handler -->
 	<haxelib name="cataclysm" />
@@ -81,6 +85,6 @@
 	<haxedef name="HXCPP_STACK_TRACE" />
 	<haxedef name="openfl-enable-handle-error" />
 
-	<!-- Flixel Modding RuleScript need (ig) -->
+	<!-- RuleScript need (ig) -->
 	<haxedef name="hscriptPos" />
 </project>
