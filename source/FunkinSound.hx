@@ -7,7 +7,7 @@ using flixel.addons.sound.FlxRhythmConductorUtil;
 
 class FunkinSound {
     public static function playSound(embeddedSound:flixel.system.FlxAssets.FlxSoundAsset, volume:Float = 1.0, looped:Bool = false) {
-        return FlxG.sound.play(embeddedSound, volume, looped);
+		return FlxG.sound.play(Paths.sound(embeddedSound), volume, looped);
     }
 
     public static function playMusic(?resetConductor:Bool = false, embeddedSound:flixel.system.FlxAssets.FlxSoundAsset, volume:Float = 1.0, looped:Bool = false) {
