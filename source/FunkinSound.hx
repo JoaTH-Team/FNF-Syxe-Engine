@@ -10,7 +10,8 @@ class FunkinSound {
 		return FlxG.sound.play(Paths.sound(embeddedSound), volume, looped);
     }
 
-    public static function playMusic(?resetConductor:Bool = false, embeddedSound:flixel.system.FlxAssets.FlxSoundAsset, volume:Float = 1.0, looped:Bool = false) {
+	public static function playMusic(?resetConductor:Bool = true, embeddedSound:flixel.system.FlxAssets.FlxSoundAsset, volume:Float = 1.0, looped:Bool = false)
+	{
         if (resetConductor) FlxRhythmConductor.reset();
         FlxG.sound.playMusic(Paths.music(embeddedSound), volume, looped);
         FlxRhythmConductor.instance.loadMetaFromFilePath(Paths.file('music/$embeddedSound.musicMeta'));

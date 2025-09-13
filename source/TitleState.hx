@@ -41,7 +41,7 @@ class TitleState extends MusicBeatState
 	override function create()
 	{
 		super.create();
-		FunkinSound.playMusic(true, "freakyMenu/freakyMenu");
+		FunkinSound.playMusic(true, "freakyMenu/freakyMenu", 1, true);
 		FlxG.sound.music.fadeIn(4, 0, 0.7);
 		persistentUpdate = true;
 
@@ -63,7 +63,7 @@ class TitleState extends MusicBeatState
         super.update(elapsed);
 		if (controls.justPressed.ACCEPT)
 		{
-			FlxG.switchState(PlayState.new);
+			FlxG.switchState(MainMenuState.new);
 		} 
     }
 	override function beatHit()
