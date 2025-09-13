@@ -42,7 +42,6 @@ class TitleState extends MusicBeatState
 	{
 		super.create();
 		FunkinSound.playMusic(true, "freakyMenu/freakyMenu", 1, true);
-		FlxG.sound.music.fadeIn(4, 0, 0.7);
 		persistentUpdate = true;
 
 		logoBl = new FlxSprite(-150, -100);
