@@ -8,7 +8,9 @@ import flixel.FlxG;
     public var downscroll:Bool = false;
 
     // controls
-    public var keyboard:Array<String> = ["LEFT", "DOWN", "UP", "RIGHT"];
+	public var gameplayKey:Array<String> = ["LEFT", "DOWN", "UP", "RIGHT", "A", "S", "W", "D"];
+	public var uiKey:Array<String> = ["LEFT", "DOWN", "UP", "RIGHT", "A", "S", "W", "D"];
+	public var actionKey:Array<String> = ["ENTER", "ESCAPE"];
 }
 
 class SaveData {

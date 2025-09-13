@@ -15,10 +15,10 @@ class MusicBeatState extends FlxState
 		controls = new Controls("Main");
 		FlxG.inputs.addInput(controls);
     }
-	override function tryUpdate(elapsed:Float)
+	override function update(elapsed:Float)
 	{
-		super.tryUpdate(elapsed);
-
+		super.update(elapsed);
+	
 		stepHit();
 	}
 

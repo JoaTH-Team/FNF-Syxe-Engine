@@ -46,13 +46,17 @@
 
 	<!-- Flixel -->
 	<haxelib name="flixel" />
-	<haxelib name="flixel-modding" />
 	<haxelib name="flixel-addons" />
 	<haxelib name="flixel-ui" />
+
+	<!-- Waveform, controls and stuff -->
 	<haxelib name="flixel-waveform" />
 	<haxelib name="flixel-controls" />
 	<haxelib name="flxrhythmconductor" />
-	
+
+	<!-- Modding -->
+	<haxelib name="scriptless-polymod" />
+
 	<!-- Scripting -->
 	<haxelib name="rulescript" />
 
@@ -85,6 +89,10 @@
 	<haxedef name="HXCPP_STACK_TRACE" />
 	<haxedef name="openfl-enable-handle-error" />
 
-	<!-- RuleScript need (ig) -->
+	<!-- RuleScript need -->
 	<haxedef name="hscriptPos" />
+
+	<!-- Engine need -->
+	<haxeflag name="-dce" value="no" />
+	<haxedef name="HXCPP_GC_BIG_BLOCKS" />
 </project>

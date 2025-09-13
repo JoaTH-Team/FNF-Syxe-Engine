@@ -3,7 +3,6 @@ package;
 import cataclysm.Cataclysm;
 import flixel.FlxG;
 import flixel.FlxGame;
-import flixel.system.FlxModding;
 import openfl.display.FPS;
 import openfl.display.Sprite;
 
@@ -16,7 +15,6 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
-		FlxModding.init();
 		SaveData.init();
 
 		addChild(new FlxGame(0, 0, TitleState, 75, 75, true, false));
