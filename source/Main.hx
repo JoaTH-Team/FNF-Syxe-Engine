@@ -1,9 +1,9 @@
 package;
 
 import cataclysm.Cataclysm;
+import debug.FPS;
 import flixel.FlxG;
 import flixel.FlxGame;
-import openfl.display.FPS;
 import openfl.display.Sprite;
 
 #if desktop

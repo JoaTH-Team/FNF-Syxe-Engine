@@ -1,10 +1,10 @@
 package;
 
 import flixel.FlxG;
-import flixel.FlxState;
+import flixel.FlxSubState;
 import flixel.addons.sound.FlxRhythmConductor;
 
-class MusicBeatState extends FlxState
+class MusicBeatSubState extends FlxSubState
 {
 	var controls:Controls;
 	var curBeat:Int = 0;
@@ -24,7 +24,7 @@ class MusicBeatState extends FlxState
 
 		Paths.clearUnusedMemory();
 		Paths.clearStoredMemory();
-
+	
 		FlxRhythmConductor.beatHit.add(function(time:Int, backward:Bool)
 		{
 			curBeat += time;
@@ -35,7 +35,7 @@ class MusicBeatState extends FlxState
 		{
 			curStep += time;
 			stepHit();
-		});
+		});	
 	}
 
 	override function tryUpdate(elapsed:Float)
