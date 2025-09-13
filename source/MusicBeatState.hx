@@ -1,10 +1,10 @@
 package;
 
 import flixel.FlxG;
-import flixel.FlxState;
 import flixel.addons.sound.FlxRhythmConductor;
+import flixel.addons.ui.FlxUIState;
 
-class MusicBeatState extends FlxState
+class MusicBeatState extends FlxUIState
 {
 	var controls:Controls;
 	var curBeat:Int = 0;

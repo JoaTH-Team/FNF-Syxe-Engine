@@ -2,6 +2,7 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 
@@ -15,6 +16,9 @@ class MainMenuState extends MusicBeatState
 
     override function create() {
         super.create();
+
+		transIn = FlxTransitionableState.defaultTransIn;
+		transOut = FlxTransitionableState.defaultTransOut;
 
 		persistentUpdate = persistentDraw = true;
 		bg = new FlxSprite(0, 0, Paths.image("menuBG"));
@@ -36,6 +40,7 @@ class MainMenuState extends MusicBeatState
 			menuItem.animation.play('idle');
 			menuItem.ID = i;
 			menuItem.screenCenter(X);
+			menuItem.x -= 255;
 			menuItem.scrollFactor.set();
 			groupMenu.add(menuItem);
 		}
@@ -52,11 +57,6 @@ class MainMenuState extends MusicBeatState
 
 		if (controls.justPressed.UI_UP || controls.justPressed.UI_DOWN)
 			changeSelection(controls.justPressed.UI_UP ? -1 : 1);
-
-		groupMenu.forEach(function(spr:FlxSprite)
-		{
-			spr.screenCenter(X);
-		});
 	}
 
 	function changeSelection(change:Int = 0)
