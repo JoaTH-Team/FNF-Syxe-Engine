@@ -15,6 +15,14 @@ class MusicBeatState extends FlxState
 		controls = new Controls("Main");
 		FlxG.inputs.addInput(controls);
     }
+	override function create()
+	{
+		super.create();
+
+		Paths.clearUnusedMemory();
+		Paths.clearStoredMemory();
+	}
+	
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
