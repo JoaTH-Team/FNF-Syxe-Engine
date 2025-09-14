@@ -6,16 +6,21 @@ import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.transition.TransitionData;
 import flixel.graphics.FlxGraphic;
+import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.math.FlxRect;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 
 class TitleState extends MusicBeatState
 {
 	var gfDance:FlxSprite;
-	var dancedLeft:Bool = false;
+	var danceLeft:Bool = false;
 	var logoBl:FlxSprite;
 	var titleText:FlxSprite;
+
+	public static var woaTransitionILoveYou:Bool = false;
 
 	override function create()
 	{
@@ -44,17 +49,35 @@ class TitleState extends MusicBeatState
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
+		camera.zoom = FlxMath.lerp(1, camera.zoom, 0.95);
+
 		if (controls.justPressed.ACCEPT)
 		{
-			FlxG.switchState(MainMenuState.new);
+			camera.zoom += 0.015;
+			camera.flash(FlxColor.WHITE, 1, function()
+			{
+				FlxTween.tween(camera, {y: FlxG.height * 2, zoom: 2, alpha: 0}, 2, {
+					ease: FlxEase.circIn,
+					onComplete: function(tween:FlxTween)
+					{
+						woaTransitionILoveYou = true;
+						FlxG.switchState(MainMenuState.new);
+					}
+				});
+			});
 		} 
 	}
 	override function beatHit()
 	{
 		super.beatHit();
 
-		logoBl.animation.play("bump", true);
-		dancedLeft = !dancedLeft;
-		gfDance.animation.play(dancedLeft ? "danceLeft" : "danceRight");
+		logoBl.animation.play('bump', true);
+
+		danceLeft = !danceLeft;
+
+		if (danceLeft)
+			gfDance.animation.play('danceRight');
+		else
+			gfDance.animation.play('danceLeft');
 	}
 }

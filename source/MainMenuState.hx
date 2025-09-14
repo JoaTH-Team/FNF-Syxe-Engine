@@ -5,6 +5,8 @@ import flixel.FlxSprite;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
+import flixel.tweens.FlxEase;
+import flixel.tweens.FlxTween;
 
 class MainMenuState extends MusicBeatState
 {
@@ -16,6 +18,16 @@ class MainMenuState extends MusicBeatState
 
     override function create() {
         super.create();
+
+		if (TitleState.woaTransitionILoveYou)
+		{
+			camera.alpha = 0;
+			camera.zoom = 2;
+			camera.y = FlxG.height * 2;
+			FlxTween.tween(camera, {y: 0, zoom: 1, alpha: 1}, 1, {
+				ease: FlxEase.circOut,
+			});
+		}
 
 		persistentUpdate = persistentDraw = true;
 		bg = new FlxSprite(0, 0, Paths.image("menuBG"));
@@ -49,6 +61,7 @@ class MainMenuState extends MusicBeatState
         super.update(elapsed);
 		if (controls.justPressed.BACK)
 		{
+			TitleState.woaTransitionILoveYou = false;
 			FlxG.switchState(TitleState.new);
 		}
 
