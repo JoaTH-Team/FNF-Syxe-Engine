@@ -25,6 +25,16 @@ class TitleState extends MusicBeatState
 	override function create()
 	{
 		super.create();
+		if (MainMenuState.woaTransitionILoveYou)
+		{
+			camera.alpha = 0;
+			camera.zoom = 2;
+			camera.y = FlxG.height * 2;
+			FlxTween.tween(camera, {y: 0, zoom: 1, alpha: 1}, 1, {
+				ease: FlxEase.circOut,
+			});
+		}
+
 		if (FlxG.sound.music == null || !FlxG.sound.music.playing)
 		{
 			FlxG.sound.playMusic(Paths.music("freakyMenu/freakyMenu"));
