@@ -17,9 +17,6 @@ class MainMenuState extends MusicBeatState
     override function create() {
         super.create();
 
-		transIn = FlxTransitionableState.defaultTransIn;
-		transOut = FlxTransitionableState.defaultTransOut;
-
 		persistentUpdate = persistentDraw = true;
 		bg = new FlxSprite(0, 0, Paths.image("menuBG"));
 		add(bg);

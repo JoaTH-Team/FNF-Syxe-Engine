@@ -52,7 +52,6 @@
 	<!-- Waveform, controls and stuff -->
 	<haxelib name="flixel-waveform" />
 	<haxelib name="flixel-controls" />
-	<haxelib name="flxrhythmconductor" />
 
 	<!-- Modding -->
 	<haxelib name="scriptless-polymod" />

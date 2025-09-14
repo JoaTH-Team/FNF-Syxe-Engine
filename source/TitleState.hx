@@ -12,27 +12,6 @@ import flixel.util.FlxColor;
 
 class TitleState extends MusicBeatState
 {
-	public function new()
-	{
-		super();
-
-		PolymodHandler.reload();
-		setupTransition();
-	}
-
-	function setupTransition():Void
-	{
-		var diamond:FlxGraphic = FlxGraphic.fromClass(GraphicTransTileDiamond);
-		diamond.persist = true;
-		diamond.destroyOnNoUse = false;
-
-		FlxTransitionableState.defaultTransIn = new TransitionData(FADE, FlxColor.BLACK, 1, new FlxPoint(0, -1), {asset: diamond, width: 32, height: 32},
-			new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
-		FlxTransitionableState.defaultTransOut = new TransitionData(FADE, FlxColor.BLACK, 0.7, new FlxPoint(0, 1), {asset: diamond, width: 32, height: 32},
-			new FlxRect(-200, -200, FlxG.width * 1.4, FlxG.height * 1.4));
-	}
-
-
 	var gfDance:FlxSprite;
 	var dancedLeft:Bool = false;
 	var logoBl:FlxSprite;
@@ -41,7 +20,11 @@ class TitleState extends MusicBeatState
 	override function create()
 	{
 		super.create();
-		FunkinSound.playMusic(true, "freakyMenu/freakyMenu", 1, true);
+		if (FlxG.sound.music == null || !FlxG.sound.music.playing)
+		{
+			FlxG.sound.playMusic(Paths.music("freakyMenu/freakyMenu"));
+			Conductor.bpm = 102;
+		}
 		persistentUpdate = true;
 
 		logoBl = new FlxSprite(-150, -100);
@@ -55,25 +38,21 @@ class TitleState extends MusicBeatState
 		gfDance.frames = Paths.spritesheet("gfDanceTitle", true, SPARROW);
 		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
 		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
-		add(gfDance);	
+		add(gfDance);
 	}
 
-    override function update(elapsed:Float) {
-        super.update(elapsed);
+	override function update(elapsed:Float)
+	{
+		super.update(elapsed);
 		if (controls.justPressed.ACCEPT)
 		{
 			FlxG.switchState(MainMenuState.new);
 		} 
-    }
-	override function beatHit()
+	}
+	override function beatHit(beat:Int)
 	{
-		super.beatHit();
-		dancedLeft = !dancedLeft;
+		super.beatHit(beat);
 
-		if (dancedLeft)
-			gfDance.animation.play("danceLeft", true);
-		else if (!dancedLeft)
-			gfDance.animation.play("danceRight", true);
 		logoBl.animation.play("bump", true);
 	}
 }
