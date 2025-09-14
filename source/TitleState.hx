@@ -24,6 +24,7 @@ class TitleState extends MusicBeatState
 		{
 			FlxG.sound.playMusic(Paths.music("freakyMenu/freakyMenu"));
 		}
+		Conductor.changeBPM(102);
 		persistentUpdate = true;
 
 		logoBl = new FlxSprite(-150, -100);
@@ -48,9 +49,9 @@ class TitleState extends MusicBeatState
 			FlxG.switchState(MainMenuState.new);
 		} 
 	}
-	override function beatHit(beat:Int)
+	override function beatHit()
 	{
-		super.beatHit(beat);
+		super.beatHit();
 
 		logoBl.animation.play("bump", true);
 		dancedLeft = !dancedLeft;
