@@ -1,14 +1,13 @@
 package;
 
-import flixel.FlxSprite;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
 
 class MainMenuState extends MusicBeatState
 {
-	var bg:FlxSprite;
-	var bgFlicker:FlxSprite;
-	var groupMenu:FlxTypedGroup<FlxSprite>;
+	var bg:FunkinSprite;
+	var bgFlicker:FunkinSprite;
+	var groupMenu:FlxTypedGroup<FunkinSprite>;
 	var groupSong:Array<String> = ["storymode", "freeplay", "options", "credits"];
 	var curSelected:Int = 0;
 
@@ -16,19 +15,19 @@ class MainMenuState extends MusicBeatState
         super.create();
 
 		persistentUpdate = persistentDraw = true;
-		bg = new FlxSprite(0, 0, Paths.image("menuBG"));
+		bg = new FunkinSprite(0, 0, Paths.image("menuBG"));
 		add(bg);
 
-		bgFlicker = new FlxSprite(0, 0, Paths.image("menuBGMagenta"));
+		bgFlicker = new FunkinSprite(0, 0, Paths.image("menuBGMagenta"));
 		bgFlicker.alpha = 0;
 		add(bgFlicker);
 
-		groupMenu = new FlxTypedGroup<FlxSprite>();
+		groupMenu = new FlxTypedGroup<FunkinSprite>();
 		add(groupMenu);
 
 		for (i in 0...groupSong.length)
 		{
-			var menuItem:FlxSprite = new FlxSprite(0, 60 + (i * 160));
+			var menuItem:FunkinSprite = new FunkinSprite(0, 60 + (i * 160));
 			menuItem.frames = Paths.spritesheet('mainmenu/${groupSong[i]}', true, SPARROW);
 			menuItem.animation.addByPrefix('idle', groupSong[i] + " idle", 24);
 			menuItem.animation.addByPrefix('selected', groupSong[i] + " selected", 24);
@@ -60,7 +59,7 @@ class MainMenuState extends MusicBeatState
 	{
 		curSelected = FlxMath.wrap(curSelected + change, 0, groupSong.length - 1);
 
-		groupMenu.forEach(function(sprite:FlxSprite)
+		groupMenu.forEach(function(sprite:FunkinSprite)
 		{
 			sprite.animation.play("idle");
 			if (curSelected == sprite.ID)

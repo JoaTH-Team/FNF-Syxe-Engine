@@ -3,9 +3,11 @@ package;
 import flixel.FlxG;
 
 @:structInit class SaveSettings {
-    // gameplay
+	// preferences
     public var ghosttap:Bool = true;
     public var downscroll:Bool = false;
+	public var antialiasing:Bool = true;
+	public var frameSkip:Int = 1;
 
     // controls
 	public var gameplayKey:Array<String> = ["LEFT", "DOWN", "UP", "RIGHT", "A", "S", "W", "D"];

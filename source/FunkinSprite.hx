@@ -1,0 +1,38 @@
+package;
+
+import flixel.FlxSprite;
+import flixel.system.FlxAssets.FlxGraphicAsset;
+
+@:keep
+@:access(openfl.display.BitmapData)
+class FunkinSprite extends FlxSprite
+{
+    public var frameSkip:Int = 1;
+    public var frameSkipCounter:Int = 0;
+
+    public function new(x:Float = 0, y:Float = 0, ?graphics:FlxGraphicAsset) {
+        super(x, y, graphics);
+
+        antialiasing = SaveData.settings.antialiasing;
+        frameSkip = SaveData.settings.frameSkip;
+
+        if (antialiasing != SaveData.settings.antialiasing)
+        {
+            dirty = true;
+        }
+    }
+
+    override function update(elapsed:Float) {
+        super.update(elapsed);
+
+        if (frameSkip > 0)
+        {
+            frameSkipCounter++;
+            if (frameSkipCounter <= frameSkip)
+            {
+                return;
+            }
+            frameSkipCounter = 0;
+        }
+    }
+}
