@@ -23,7 +23,6 @@ class TitleState extends MusicBeatState
 		if (FlxG.sound.music == null || !FlxG.sound.music.playing)
 		{
 			FlxG.sound.playMusic(Paths.music("freakyMenu/freakyMenu"));
-			Conductor.bpm = 102;
 		}
 		persistentUpdate = true;
 
@@ -54,5 +53,7 @@ class TitleState extends MusicBeatState
 		super.beatHit(beat);
 
 		logoBl.animation.play("bump", true);
+		dancedLeft = !dancedLeft;
+		gfDance.animation.play(dancedLeft ? "danceLeft" : "danceRight");
 	}
 }
