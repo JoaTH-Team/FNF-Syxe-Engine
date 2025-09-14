@@ -7,7 +7,7 @@ import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 
-class TitleState extends TransitionState
+class TitleState extends MusicBeatState
 {
 	var gfDance:FlxSprite;
 	var danceLeft:Bool = false;
@@ -20,8 +20,10 @@ class TitleState extends TransitionState
 
 		if (FlxG.sound.music == null || !FlxG.sound.music.playing)
 		{
-			FlxG.sound.playMusic(Paths.music("freakyMenu/freakyMenu"));
+			FlxG.sound.playMusic(Paths.music('freakyMenu/freakyMenu'), 0);
+			FlxG.sound.music.fadeIn(4, 0, 0.7);
 		}
+
 		Conductor.changeBPM(102);
 		persistentUpdate = true;
 
@@ -46,12 +48,12 @@ class TitleState extends TransitionState
 
 		if (controls.justPressed.ACCEPT)
 		{
-			camera.zoom += 0.015;
+			camera.zoom += 0.135;
 			camera.flash(FlxColor.WHITE, 1, function()
 			{
-				TransitionState.switchStateWithTransition(MainMenuState);
+				MusicBeatState.switchStateWithTransition(MainMenuState);
 			});
-		} 
+		}
 	}
 	override function beatHit()
 	{
@@ -65,5 +67,6 @@ class TitleState extends TransitionState
 			gfDance.animation.play('danceRight');
 		else
 			gfDance.animation.play('danceLeft');
+		camera.zoom += 0.135;
 	}
 }

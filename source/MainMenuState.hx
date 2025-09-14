@@ -1,12 +1,8 @@
 package;
 
-import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.addons.transition.FlxTransitionableState;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
 
 class MainMenuState extends MusicBeatState
 {
@@ -49,9 +45,11 @@ class MainMenuState extends MusicBeatState
 
     override function update(elapsed:Float) {
         super.update(elapsed);
+		camera.zoom = FlxMath.lerp(1, camera.zoom, 0.95);
+
 		if (controls.justPressed.BACK)
 		{
-			TransitionState.switchStateWithTransition(TitleState);
+			MusicBeatState.switchStateWithTransition(TitleState);
 		}
 
 		if (controls.justPressed.UI_UP || controls.justPressed.UI_DOWN)
