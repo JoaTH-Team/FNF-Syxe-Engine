@@ -16,20 +16,8 @@ class MainMenuState extends MusicBeatState
 	var groupSong:Array<String> = ["storymode", "freeplay", "options", "credits"];
 	var curSelected:Int = 0;
 
-	public static var woaTransitionILoveYou:Bool = false;
-
     override function create() {
         super.create();
-
-		if (TitleState.woaTransitionILoveYou)
-		{
-			camera.alpha = 0;
-			camera.zoom = 2;
-			camera.y = FlxG.height * 2;
-			FlxTween.tween(camera, {y: 0, zoom: 1, alpha: 1}, 1, {
-				ease: FlxEase.circOut,
-			});
-		}
 
 		persistentUpdate = persistentDraw = true;
 		bg = new FlxSprite(0, 0, Paths.image("menuBG"));
@@ -63,15 +51,7 @@ class MainMenuState extends MusicBeatState
         super.update(elapsed);
 		if (controls.justPressed.BACK)
 		{
-			TitleState.woaTransitionILoveYou = false;
-			FlxTween.tween(camera, {y: FlxG.height * 2, zoom: 2, alpha: 0}, 2, {
-				ease: FlxEase.circIn,
-				onComplete: function(tween:FlxTween)
-				{
-					woaTransitionILoveYou = true;
-					FlxG.switchState(TitleState.new);
-				}
-			});
+			TransitionState.switchStateWithTransition(TitleState);
 		}
 
 		if (controls.justPressed.UI_UP || controls.justPressed.UI_DOWN)

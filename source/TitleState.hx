@@ -2,38 +2,21 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
-import flixel.addons.transition.FlxTransitionableState;
-import flixel.addons.transition.TransitionData;
-import flixel.graphics.FlxGraphic;
 import flixel.math.FlxMath;
-import flixel.math.FlxPoint;
-import flixel.math.FlxRect;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 
-class TitleState extends MusicBeatState
+class TitleState extends TransitionState
 {
 	var gfDance:FlxSprite;
 	var danceLeft:Bool = false;
 	var logoBl:FlxSprite;
 	var titleText:FlxSprite;
 
-	public static var woaTransitionILoveYou:Bool = false;
-
 	override function create()
 	{
 		super.create();
-		if (MainMenuState.woaTransitionILoveYou)
-		{
-			camera.alpha = 0;
-			camera.zoom = 2;
-			camera.y = FlxG.height * 2;
-			FlxTween.tween(camera, {y: 0, zoom: 1, alpha: 1}, 1, {
-				ease: FlxEase.circOut,
-			});
-		}
 
 		if (FlxG.sound.music == null || !FlxG.sound.music.playing)
 		{
@@ -66,14 +49,7 @@ class TitleState extends MusicBeatState
 			camera.zoom += 0.015;
 			camera.flash(FlxColor.WHITE, 1, function()
 			{
-				FlxTween.tween(camera, {y: FlxG.height * 2, zoom: 2, alpha: 0}, 2, {
-					ease: FlxEase.circIn,
-					onComplete: function(tween:FlxTween)
-					{
-						woaTransitionILoveYou = true;
-						FlxG.switchState(MainMenuState.new);
-					}
-				});
+				TransitionState.switchStateWithTransition(MainMenuState);
 			});
 		} 
 	}
