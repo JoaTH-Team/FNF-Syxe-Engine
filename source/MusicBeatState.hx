@@ -167,9 +167,4 @@ class MusicBeatState extends FlxUIState
 			}
 		});
 	}
-
-	public static function goBackWithTransition(targetState:Class<FlxState>, direction:TransitionDirection = DOWN, duration:Float = 1.0, zoom:Float = 2.0)
-	{
-		switchStateWithTransition(targetState, direction, duration, zoom);
-	}
 }

@@ -9,6 +9,7 @@ class MainMenuState extends MusicBeatState
 	var bgFlicker:FunkinSprite;
 	var groupMenu:FlxTypedGroup<FunkinSprite>;
 	var groupSong:Array<String> = ["storymode", "freeplay", "options", "credits"];
+
 	var curSelected:Int = 0;
 
     override function create() {
@@ -29,12 +30,12 @@ class MainMenuState extends MusicBeatState
 		{
 			var menuItem:FunkinSprite = new FunkinSprite(0, 60 + (i * 160));
 			menuItem.frames = Paths.spritesheet('mainmenu/${groupSong[i]}', true, SPARROW);
-			menuItem.addPrefix('idle', groupSong[i] + " idle", 24);
-			menuItem.addPrefix('selected', groupSong[i] + " selected", 24);
+			menuItem.addPrefix('idle', groupSong[i] + " idle", 24, true);
+			menuItem.addPrefix('selected', groupSong[i] + " selected", 24, true);
 			menuItem.playAnim('idle');
 			menuItem.ID = i;
 			menuItem.screenCenter(X);
-			menuItem.x -= 255;
+			menuItem.x -= 275;
 			menuItem.scrollFactor.set();
 			groupMenu.add(menuItem);
 		}

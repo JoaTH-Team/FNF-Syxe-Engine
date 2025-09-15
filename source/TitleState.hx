@@ -46,10 +46,13 @@ class TitleState extends MusicBeatState
 		super.update(elapsed);
 		camera.zoom = FlxMath.lerp(1, camera.zoom, 0.95);
 
-		if (controls.justPressed.ACCEPT)
+		var stopSpamming:Bool = false;
+
+		if (controls.justPressed.ACCEPT && !stopSpamming)
 		{
 			camera.zoom += 0.135;
 			allowZoomBeat = false;
+			stopSpamming = true;
 			camera.flash(FlxColor.WHITE, 1, function()
 			{
 				MusicBeatState.switchStateWithTransition(MainMenuState);
