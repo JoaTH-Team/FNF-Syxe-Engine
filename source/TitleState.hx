@@ -29,15 +29,15 @@ class TitleState extends MusicBeatState
 
 		logoBl = new FunkinSprite(-150, -100);
 		logoBl.frames = Paths.spritesheet('logoBumpin', true, SPARROW);
-		logoBl.animation.addByPrefix('bump', 'logo bumpin', 24);
-		logoBl.animation.play('bump');
+		logoBl.addPrefix('bump', 'logo bumpin', 24);
+		logoBl.playAnim('bump');
 		logoBl.updateHitbox();
 		add(logoBl);
 
 		gfDance = new FunkinSprite(FlxG.width * 0.4, FlxG.height * 0.07);
 		gfDance.frames = Paths.spritesheet("gfDanceTitle", true, SPARROW);
-		gfDance.animation.addByIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
-		gfDance.animation.addByIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
+		gfDance.addIndices('danceLeft', 'gfDance', [30, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], "", 24, false);
+		gfDance.addIndices('danceRight', 'gfDance', [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "", 24, false);
 		add(gfDance);
 	}
 
@@ -60,14 +60,14 @@ class TitleState extends MusicBeatState
 	{
 		super.beatHit();
 
-		logoBl.animation.play('bump', true);
+		logoBl.playAnim('bump', true);
 
 		danceLeft = !danceLeft;
 
 		if (danceLeft)
-			gfDance.animation.play('danceRight');
+			gfDance.playAnim('danceRight');
 		else
-			gfDance.animation.play('danceLeft');
+			gfDance.playAnim('danceLeft');
 		if (allowZoomBeat)
 			camera.zoom += 0.0135;
 	}
