@@ -35,6 +35,15 @@ class FunkinSprite extends FlxSprite
             frameSkipCounter = 0;
         }
     }
+	override function updateAnimation(elapsed:Float)
+	{
+		if (frameSkip > 0 && frameSkipCounter != 0)
+		{
+			return;
+		}
+		super.updateAnimation(elapsed);
+	}
+
 	public function addPrefix(nameAnim:String, prefix:String, fps:Int = 24, looped:Bool = false)
 	{
 		return this.animation.addByPrefix(nameAnim, prefix, fps, looped);

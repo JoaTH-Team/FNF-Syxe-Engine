@@ -28,7 +28,7 @@ class OptionsState extends MusicBeatState
 
 	var optionRanges:Map<String, Array<Dynamic>> = [
 		"Accurary" => ["Simple", "Complex", "Unfair"],
-		"Frame Skip" => [0, 10, 1], // min, max, step
+		"Frame Skip" => [0, 2, 1], // min, max, step
 		"Transition Type" => ["Default", "Single", "None"]
 	];
 	var currentValues:Map<String, Dynamic> = new Map();
@@ -288,7 +288,7 @@ class OptionsTextList extends FlxText
 		{
 			var scaledY = FlxMath.remapToRange(targetY, 0, 1, 0, 1.3);
 			this.y = FlxMath.lerp(y, (scaledY * 80) + (FlxG.height * 0.48), 0.16);
-			this.x = FlxMath.lerp(x, 30 + (Math.abs(targetY) * -100), 0.16);
+			this.x = FlxMath.lerp(x, 100 + (Math.abs(targetY) * -50), 0.16);
 		}
 	}
 }
