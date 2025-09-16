@@ -91,80 +91,91 @@ class MusicBeatState extends FlxUIState
 
 	function applyEnterTransition()
 	{
-		switch (transitionDirection)
+		if (SaveData.settings.transitionType == "Default")
 		{
-			case UP:
-				camera.y = FlxG.height * 2;
-			case DOWN:
-				camera.y = -FlxG.height * 2;
-			case LEFT:
-				camera.x = FlxG.width * 2;
-			case RIGHT:
-				camera.x = -FlxG.width * 2;
-		}
-
-		camera.alpha = 0;
-		camera.zoom = transitionZoom;
-
-		var targetX:Float = 0;
-		var targetY:Float = 0;
-
-		FlxTween.tween(camera, {
-			x: targetX,
-			y: targetY,
-			zoom: 1,
-			alpha: 1
-		}, transitionDuration, {
-			ease: FlxEase.circOut,
-			onComplete: function(tween:FlxTween)
+			switch (transitionDirection)
 			{
-				transitionInProgress = false;
+				case UP:
+					camera.y = FlxG.height * 2;
+				case DOWN:
+					camera.y = -FlxG.height * 2;
+				case LEFT:
+					camera.x = FlxG.width * 2;
+				case RIGHT:
+					camera.x = -FlxG.width * 2;
 			}
-		});
+
+			camera.alpha = 0;
+			camera.zoom = transitionZoom;
+
+			var targetX:Float = 0;
+			var targetY:Float = 0;
+
+			FlxTween.tween(camera, {
+				x: targetX,
+				y: targetY,
+				zoom: 1,
+				alpha: 1
+			}, transitionDuration, {
+				ease: FlxEase.circOut,
+				onComplete: function(tween:FlxTween)
+				{
+					transitionInProgress = false;
+				}
+			});
+		}
+		else
+		{
+			transitionInProgress = false;
+		}
 	}
 
 	public static function switchStateWithTransition(targetState:Class<FlxState>, direction:TransitionDirection = UP, duration:Float = 1.0, zoom:Float = 2.0)
 	{
-		if (SaveData.settings.transitionType == "Default")
-		{
-			transitionInProgress = true;
-			nextState = targetState;
-			transitionDirection = direction;
-			transitionDuration = duration;
-			transitionZoom = zoom;
+		transitionInProgress = true;
+		nextState = targetState;
+		transitionDirection = direction;
+		transitionDuration = duration;
+		transitionZoom = zoom;
 
-			applyExitTransition();
-		}
+		applyExitTransition();
 	}
 
 	static function applyExitTransition()
 	{
-		var targetX:Float = 0;
-		var targetY:Float = 0;
-
-		switch (transitionDirection)
+		if (SaveData.settings.transitionType == "Default")
 		{
-			case UP:
-				targetY = -FlxG.height * 2;
-			case DOWN:
-				targetY = FlxG.height * 2;
-			case LEFT:
-				targetX = -FlxG.width * 2;
-			case RIGHT:
-				targetX = FlxG.width * 2;
-		}
+			var targetX:Float = 0;
+			var targetY:Float = 0;
 
-		FlxTween.tween(FlxG.camera, {
-			x: targetX,
-			y: targetY,
-			zoom: transitionZoom,
-			alpha: 0
-		}, transitionDuration, {
-			ease: FlxEase.circIn,
-			onComplete: function(tween:FlxTween)
+			switch (transitionDirection)
 			{
-				FlxG.switchState(() -> Type.createInstance(nextState, []));
+				case UP:
+					targetY = -FlxG.height * 2;
+				case DOWN:
+					targetY = FlxG.height * 2;
+				case LEFT:
+					targetX = -FlxG.width * 2;
+				case RIGHT:
+					targetX = FlxG.width * 2;
 			}
-		});
+
+			FlxTween.tween(FlxG.camera, {
+				x: targetX,
+				y: targetY,
+				zoom: transitionZoom,
+				alpha: 0
+			}, transitionDuration, {
+				ease: FlxEase.circIn,
+				onComplete: function(tween:FlxTween)
+				{
+					FlxG.switchState(() -> Type.createInstance(nextState, []));
+				}
+			});
+		}
+		else
+		{
+			FlxG.switchState(() -> Type.createInstance(nextState, []));
+		}
 	}
 }

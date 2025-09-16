@@ -93,10 +93,7 @@ class OptionsState extends MusicBeatState
 			}
 		}
 
-		while (groupOptions.members.length > 0)
-		{
-			groupOptions.remove(groupOptions.members[0], true);
-		}	
+		groupOptions.clear();
 		
 		for (i in 0...listOptions.length)
 		{
@@ -111,16 +108,49 @@ class OptionsState extends MusicBeatState
 		changeSelection();
 	}
 
+	function refreshList()
+	{
+		for (i in 0...groupOptions.length)
+		{
+			if (i < listOptions.length)
+			{
+				var optionData = prefOptions[i];
+				var optionName = optionData[0];
+				var optionType = optionData[1];
+				var displayText = optionName + ": ";
+
+				switch (optionType)
+				{
+					case "Bool":
+						displayText += currentValues.get(optionName) ? "ENABLE" : "DISABLE";
+					case "String":
+						displayText += currentValues.get(optionName);
+					case "Int", "Float":
+						displayText += Std.string(currentValues.get(optionName));
+				}
+
+				groupOptions.members[i].text = displayText;
+			}
+		}
+	}
+
     override function update(elapsed:Float) {
         super.update(elapsed);
 
         if (controls.justPressed.BACK) {
 			SaveData.saveSettings();
+
 			if (!inPreferences)
+			{
 				MusicBeatState.switchStateWithTransition(MainMenuState, RIGHT);
+			}
 			else
+			{
+				inPreferences = false;
 				changeGroupSelect(null);
+			}
 		}
+		
 		if (controls.justPressed.ACCEPT)
 		{
 			if (inPreferences)
@@ -142,7 +172,7 @@ class OptionsState extends MusicBeatState
 						}
 				}
 
-				changeGroupSelect(prefOptions.map(opt -> opt[0]));
+				refreshList();
 			}
 			else
 			{
@@ -183,7 +213,7 @@ class OptionsState extends MusicBeatState
 							SaveData.settings.frameSkip = Std.int(newValue);
 					}
 
-					changeGroupSelect(prefOptions.map(opt -> opt[0]));
+					refreshList();
 				}
 			}
 			else if ((optionType == "String") && optionRanges.exists(optionName))
@@ -207,7 +237,7 @@ class OptionsState extends MusicBeatState
 						SaveData.settings.transitionType = nextValue;
 				}
 
-				changeGroupSelect(prefOptions.map(opt -> opt[0]));
+				refreshList();
 			}
 		}
 
