@@ -21,6 +21,7 @@ class OptionsState extends MusicBeatState
 	var prefOptions:Array<Array<String>> = [
 		["Ghost tap", "Bool"],
 		["Downscroll", "Bool"],
+		["Antialiasing", "Bool"],
 		["Accurary", "String"],
 		["Frame Skip", "Int"],
 		["Transition Type", "String"]
@@ -59,6 +60,7 @@ class OptionsState extends MusicBeatState
 	{
 		currentValues.set("Ghost tap", SaveData.settings.ghosttap);
 		currentValues.set("Downscroll", SaveData.settings.downscroll);
+		currentValues.set("Antialiasing", SaveData.settings.antialiasing);
 		currentValues.set("Accurary", SaveData.settings.accuracy);
 		currentValues.set("Frame Skip", SaveData.settings.frameSkip);
 		currentValues.set("Transition Type", SaveData.settings.transitionType);
@@ -169,6 +171,7 @@ class OptionsState extends MusicBeatState
 						{
 							case "Ghost tap": SaveData.settings.ghosttap = !currentValue;
 							case "Downscroll": SaveData.settings.downscroll = !currentValue;
+							case "Antialiasing": SaveData.settings.antialiasing = !currentValue;
 						}
 				}
 
