@@ -97,11 +97,10 @@ class OptionsState extends MusicBeatState
 		
 		for (i in 0...listOptions.length)
 		{
-			// var text:OptionsTextList = new OptionsTextList(30, 0, listOptions[i], 64);
-			var text:OptionsTextList = new OptionsTextList(0, (70 * i), listOptions[i], false, false);
+			var text:OptionsTextList = new OptionsTextList(30, 0, 0, listOptions[i], 64);
 			text.targetY = i;
 			text.ID = i;
-			text.isOptionsItem = true;
+			text.asMenuItem = true;
 			groupOptions.add(text);
 		}
 
@@ -269,15 +268,22 @@ class OptionsState extends MusicBeatState
 	}
 }
 
-class OptionsTextList extends Alphabet
+class OptionsTextList extends FlxText
 {
-	public var isOptionsItem:Bool = false;
+	public var asMenuItem:Bool = false;
+	public var targetY:Float = 0;
+
+	public function new(X:Float = 0, Y:Float = 0, FieldWidth:Float = 0, ?Text:String, Size:Int = 8, EmbeddedFont:Bool = true)
+	{
+		super(X, Y, FieldWidth, Text, Size, EmbeddedFont);
+		setFormat(Paths.font("phantommuff.ttf"), Size, FlxColor.WHITE, LEFT, OUTLINE, FlxColor.BLACK);
+	}
 
 	override function update(elapsed:Float)
 	{
 		super.update(elapsed);
 
-		if (isOptionsItem)
+		if (asMenuItem)
 		{
 			var scaledY = FlxMath.remapToRange(targetY, 0, 1, 0, 1.3);
 			this.y = FlxMath.lerp(y, (scaledY * 40) + (FlxG.height * 0.48), 0.16);
