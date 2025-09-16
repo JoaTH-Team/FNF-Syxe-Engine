@@ -228,7 +228,9 @@ class OptionsState extends MusicBeatState
 				if (currentIndex < 0)
 					currentIndex = 0;
 
-				var nextIndex = (currentIndex + 1) % options.length;
+				var nextIndex:Int = 0;
+				nextIndex = FlxMath.wrap(currentIndex + (controls.justPressed.UI_LEFT ? -1 : 1), 0, options.length - 1);
+
 				var nextValue = options[nextIndex];
 				currentValues.set(optionName, nextValue);
 
