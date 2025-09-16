@@ -22,12 +22,14 @@ class OptionsState extends MusicBeatState
 		["Ghost tap", "Bool"],
 		["Downscroll", "Bool"],
 		["Accurary", "String"],
-		["Frame Skip", "Int"]
+		["Frame Skip", "Int"],
+		["Transition Type", "String"]
 	];
 
 	var optionRanges:Map<String, Array<Dynamic>> = [
 		"Accurary" => ["Simple", "Complex", "Unfair"],
-		"Frame Skip" => [0, 10, 1] // min, max, step
+		"Frame Skip" => [0, 10, 1], // min, max, step
+		"Transition Type" => ["Default", "Single", "None"]
 	];
 	var currentValues:Map<String, Dynamic> = new Map();
 	var inPreferences:Bool = false;
@@ -59,6 +61,7 @@ class OptionsState extends MusicBeatState
 		currentValues.set("Downscroll", SaveData.settings.downscroll);
 		currentValues.set("Accurary", SaveData.settings.accuracy);
 		currentValues.set("Frame Skip", SaveData.settings.frameSkip);
+		currentValues.set("Transition Type", SaveData.settings.transitionType);
 	}
 
 	function changeGroupSelect(arrayList:Array<String>)
@@ -200,6 +203,8 @@ class OptionsState extends MusicBeatState
 				{
 					case "Accurary":
 						SaveData.settings.accuracy = nextValue;
+					case "Transition Type":
+						SaveData.settings.transitionType = nextValue;
 				}
 
 				changeGroupSelect(prefOptions.map(opt -> opt[0]));
@@ -252,6 +257,7 @@ class OptionsTextList extends FlxText
 		{
 			var scaledY = FlxMath.remapToRange(targetY, 0, 1, 0, 1.3);
 			this.y = FlxMath.lerp(y, (scaledY * 40) + (FlxG.height * 0.48), 0.16);
+			this.x = FlxMath.lerp(x, 30 + (Math.abs(targetY) * -50), 0.16);
 		}
 	}
 }

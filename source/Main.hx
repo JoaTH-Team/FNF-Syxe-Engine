@@ -19,6 +19,8 @@ class Main extends Sprite
 		addChild(new FlxGame(0, 0, InitState, 75, 75, true, false));
 		addChild(new FPS(10, 3, 0xFFFFFF));
 
+		stage.scaleMode = NO_SCALE;
+
 		var crash_handler:Cataclysm = new Cataclysm();
 		crash_handler.setup("crashlogs", "FNF_SyxeEngineLog");
 		crash_handler.onApplicationCrash = function () {

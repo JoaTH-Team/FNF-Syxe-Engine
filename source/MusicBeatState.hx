@@ -37,9 +37,6 @@ class MusicBeatState extends FlxUIState
 
 	override function create()
 	{
-		if (transIn != null)
-			trace('reg ' + transIn.region);
-
 		super.create();
 		if (transitionInProgress)
 		{
@@ -128,13 +125,16 @@ class MusicBeatState extends FlxUIState
 
 	public static function switchStateWithTransition(targetState:Class<FlxState>, direction:TransitionDirection = UP, duration:Float = 1.0, zoom:Float = 2.0)
 	{
-		transitionInProgress = true;
-		nextState = targetState;
-		transitionDirection = direction;
-		transitionDuration = duration;
-		transitionZoom = zoom;
+		if (SaveData.settings.transitionType == "Default")
+		{
+			transitionInProgress = true;
+			nextState = targetState;
+			transitionDirection = direction;
+			transitionDuration = duration;
+			transitionZoom = zoom;
 
-		applyExitTransition();
+			applyExitTransition();
+		}
 	}
 
 	static function applyExitTransition()
