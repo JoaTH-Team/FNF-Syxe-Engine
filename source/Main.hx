@@ -4,6 +4,7 @@ import cataclysm.Cataclysm;
 import debug.FPS;
 import flixel.FlxG;
 import flixel.FlxGame;
+import hxdiscord_rpc.Discord;
 import openfl.display.Sprite;
 
 #if desktop
@@ -15,6 +16,8 @@ class Main extends Sprite
 	public function new()
 	{
 		super();
+
+		DiscordClient.init();
 
 		addChild(new FlxGame(0, 0, InitState, 75, 75, true, false));
 		addChild(new FPS(10, 3, 0xFFFFFF));

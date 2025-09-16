@@ -65,6 +65,9 @@
 	<!-- Video -->
 	<haxelib name="hxvlc" />
 
+	<!-- Discord RPC -->
+	<haxelib name="hxdiscord_rpc" />
+
 	<!-- ______________________________ Haxedefines _____________________________ -->
 
 	<!-- Flixel --> 
