@@ -60,6 +60,8 @@ class MainMenuState extends MusicBeatState
 			{
 				case "options":
 					MusicBeatState.switchStateWithTransition(OptionsState, LEFT);
+				case "credits":
+					MusicBeatState.switchStateWithTransition(CreditsState);
 			}
 		}
 	}

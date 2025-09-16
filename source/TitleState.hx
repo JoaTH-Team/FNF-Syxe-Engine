@@ -50,13 +50,15 @@ class TitleState extends MusicBeatState
 
 		if (controls.justPressed.ACCEPT && !stopSpamming)
 		{
-			camera.zoom += 0.135;
-			allowZoomBeat = false;
-			stopSpamming = true;
-			camera.flash(FlxColor.WHITE, 1, function()
+			if (stopSpamming == false)
 			{
-				MusicBeatState.switchStateWithTransition(MainMenuState);
-			});
+				camera.zoom += 0.135;
+				allowZoomBeat = false;
+				camera.flash(FlxColor.WHITE, 1, function()
+				{
+					MusicBeatState.switchStateWithTransition(MainMenuState);
+				});
+			}
 		}
 	}
 	override function beatHit()
