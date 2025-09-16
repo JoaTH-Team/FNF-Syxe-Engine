@@ -8,6 +8,7 @@ import flixel.FlxG;
     public var downscroll:Bool = false;
 	public var antialiasing:Bool = true;
 	public var frameSkip:Int = 1;
+	public var accuracy:String = "Simple";
 
     // controls
 	public var gameplayKey:Array<String> = ["LEFT", "DOWN", "UP", "RIGHT", "A", "S", "W", "D"];
