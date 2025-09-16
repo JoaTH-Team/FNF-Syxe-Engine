@@ -3,6 +3,7 @@ package;
 import flixel.FlxG;
 import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.math.FlxMath;
+import flixel.util.FlxColor;
 
 class CreditsState extends MusicBeatState
 {
@@ -46,11 +47,27 @@ class CreditsState extends MusicBeatState
 			changeSelection(controls.justPressed.UI_UP ? -1 : 1);
 
         if (controls.justPressed.ACCEPT) {
-            
+
         }
     }
 
     function changeSelection(change:Int = 0) {
         curSelected = FlxMath.wrap(curSelected + change, 0, creditsList.length - 1);
+		var inSelected:Int = 0;
+		groupCredits.forEach(function(text:Alphabet)
+		{
+			text.targetY = inSelected - curSelected;
+			inSelected += 1;
+			if (text.ID == curSelected)
+			{
+				text.color = FlxColor.YELLOW;
+				text.alpha = 1;
+			}
+			else
+			{
+				text.color = FlxColor.WHITE;
+				text.alpha = 0.5;
+			}
+		});
     }
 }
