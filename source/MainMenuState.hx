@@ -15,8 +15,6 @@ class MainMenuState extends MusicBeatState
     override function create() {
         super.create();
 
-		DiscordClient.updatePresence("On Menu");
-
 		persistentUpdate = persistentDraw = true;
 		bg = new FunkinSprite(0, 0, Paths.image("menuBG"));
 		add(bg);
@@ -59,8 +57,10 @@ class MainMenuState extends MusicBeatState
 		{
 			switch (groupSong[curSelected])
 			{
+				case "freeplay":
+					MusicBeatState.switchStateWithTransition(FreeplayState, RIGHT);
 				case "options":
-					MusicBeatState.switchStateWithTransition(OptionsState, LEFT);
+					MusicBeatState.switchStateWithTransition(options.OptionsState, LEFT);
 				case "credits":
 					MusicBeatState.switchStateWithTransition(CreditsState);
 			}

@@ -18,6 +18,16 @@ class MusicBeatSubState extends FlxUISubState
 		FlxG.inputs.addInput(controls);
 	}
 
+	override function create()
+	{
+		super.create();
+		FlxG.signals.preStateCreate.add((state) ->
+		{
+			Paths.clearStoredMemory();
+			Paths.clearUnusedMemory();
+		});
+	}
+
 	override function update(elapsed:Float)
 	{
 		Conductor.update(elapsed);

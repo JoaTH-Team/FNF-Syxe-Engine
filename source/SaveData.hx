@@ -10,6 +10,7 @@ import flixel.FlxG;
 	public var frameSkip:Int = 1;
 	public var accuracy:String = "Simple";
 	public var transitionType:String = "Default";
+	public var framerate:Int = 60;
 
     // controls
 	public var gameplayKey:Array<String> = ["LEFT", "DOWN", "UP", "RIGHT", "A", "S", "W", "D"];

@@ -23,12 +23,6 @@ class Main extends Sprite
 		stage.scaleMode = NO_SCALE;
 		DiscordClient.init();
 
-		FlxG.signals.preStateCreate.add((stateCreaton) ->
-		{
-			Paths.clearStoredMemory();
-			Paths.clearUnusedMemory();
-		});
-
 		var crash_handler:Cataclysm = new Cataclysm();
 		crash_handler.setup("crashlogs", "FNF_SyxeEngineLog");
 		crash_handler.onApplicationCrash = function () {

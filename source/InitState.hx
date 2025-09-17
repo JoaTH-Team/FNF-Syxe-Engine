@@ -17,7 +17,8 @@ class InitState extends MusicBeatState
         PolymodHandler.reload();
 		SaveData.init();
 
-        FlxG.game.focusLostFramerate = 60;
+		FlxG.game.focusLostFramerate = 30;
+		CoolUtil.updateFPS();
 
 		if (SaveData.settings.transitionType == "Default" || SaveData.settings.transitionType == "Single")
 			crateTransition();

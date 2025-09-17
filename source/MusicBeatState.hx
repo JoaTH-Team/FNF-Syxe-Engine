@@ -42,6 +42,11 @@ class MusicBeatState extends FlxUIState
 		{
 			applyEnterTransition();
 		}
+		FlxG.signals.preStateCreate.add((state) ->
+		{
+			Paths.clearStoredMemory();
+			Paths.clearUnusedMemory();
+		});
 	}
 
 	override function update(elapsed:Float)
