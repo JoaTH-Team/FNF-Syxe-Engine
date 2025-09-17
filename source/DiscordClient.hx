@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import hxdiscord_rpc.Discord;
 import hxdiscord_rpc.Types;
 import sys.thread.Thread;
@@ -37,9 +38,25 @@ class DiscordClient {
 	{
 		trace('[DISCORD] Successfully connected to user "${request[0].username}"!');
 
+		updatePresence("Just Boot the game!");
+	}
+
+	public static function updatePresence(details:String, ?state:String)
+	{
+		var otherStateFunniThingie:Array<String> = [
+			"Syxe Engine",
+			"Sussy Engine",
+			"Why you look at me?",
+			"Hey, Discord thingie is working!"
+		];
+
 		final discordPresence:DiscordRichPresence = new DiscordRichPresence();
 		discordPresence.type = DiscordActivityType_Playing;
-		discordPresence.state = "On The Game";
+		if (state == null)
+			discordPresence.state = otherStateFunniThingie[FlxG.random.int(0, otherStateFunniThingie.length - 1)];
+		else
+			discordPresence.state = state;
+		discordPresence.details = details;
 
 		final button:DiscordButton = new DiscordButton();
 		button.label = "Github Link";

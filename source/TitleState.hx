@@ -18,6 +18,8 @@ class TitleState extends MusicBeatState
 	{
 		super.create();
 
+		DiscordClient.updatePresence("On Title");
+
 		if (FlxG.sound.music == null || !FlxG.sound.music.playing)
 		{
 			FlxG.sound.playMusic(Paths.music('freakyMenu/freakyMenu'), 0);

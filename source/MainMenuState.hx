@@ -15,6 +15,8 @@ class MainMenuState extends MusicBeatState
     override function create() {
         super.create();
 
+		DiscordClient.updatePresence("On Menu");
+
 		persistentUpdate = persistentDraw = true;
 		bg = new FunkinSprite(0, 0, Paths.image("menuBG"));
 		add(bg);
@@ -44,8 +46,7 @@ class MainMenuState extends MusicBeatState
     }
 
     override function update(elapsed:Float) {
-        super.update(elapsed);
-		camera.zoom = FlxMath.lerp(1, camera.zoom, 0.95);
+		super.update(elapsed);
 
 		if (controls.justPressed.BACK)
 		{
