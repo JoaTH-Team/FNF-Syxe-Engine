@@ -17,10 +17,9 @@ class Main extends Sprite
 	{
 		super();
 
-		addChild(new FlxGame(0, 0, InitState, 75, 75, true, false));
+		addChild(new FlxGame(0, 0, InitState, 60, 60, true, false));
 		addChild(new FPS(10, 3, 0xFFFFFF));
 
-		stage.scaleMode = NO_SCALE;
 		DiscordClient.init();
 
 		var crash_handler:Cataclysm = new Cataclysm();

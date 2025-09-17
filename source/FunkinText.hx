@@ -1,6 +1,7 @@
 package;
 
 import flixel.text.FlxText;
+import flixel.util.FlxColor;
 
 class FunkinText extends FlxText
 {
@@ -8,5 +9,6 @@ class FunkinText extends FlxText
         super(X, Y, FieldWidth, Text, Size);
 
         antialiasing = SaveData.settings.antialiasing;
+		setFormat(Paths.font("vcr.ttf"), Size, FlxColor.WHITE, OUTLINE, FlxColor.BLACK);
     }
 }
