@@ -94,6 +94,9 @@
 	<!-- RuleScript need -->
 	<haxedef name="hscriptPos" />
 
+	<!-- hxdiscord RPC need -->
+	<haxedef name="DISCORD_DISABLE_IO_THREAD" if="hxdiscord_rpc" />
+
 	<!-- Engine need -->
 	<haxeflag name="-dce" value="no" />
 	<haxedef name="HXCPP_GC_BIG_BLOCKS" />

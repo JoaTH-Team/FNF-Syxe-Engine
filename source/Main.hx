@@ -17,12 +17,17 @@ class Main extends Sprite
 	{
 		super();
 
-		DiscordClient.init();
-
 		addChild(new FlxGame(0, 0, InitState, 75, 75, true, false));
 		addChild(new FPS(10, 3, 0xFFFFFF));
 
 		stage.scaleMode = NO_SCALE;
+		DiscordClient.init();
+
+		FlxG.signals.preStateCreate.add((stateCreaton) ->
+		{
+			Paths.clearStoredMemory();
+			Paths.clearUnusedMemory();
+		});
 
 		var crash_handler:Cataclysm = new Cataclysm();
 		crash_handler.setup("crashlogs", "FNF_SyxeEngineLog");
