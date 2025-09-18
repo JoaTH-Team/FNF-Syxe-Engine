@@ -91,6 +91,7 @@ class OptionsControlsSubState extends MusicBeatSubState
 			text.targetY = i;
 			text.ID = i;
 			text.defaultX = 150;
+			text.defaultSpaceX = 0;
 			text.asMenuItem = true;
 			groupOptions.add(text);
 		}

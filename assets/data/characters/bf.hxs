@@ -1,6 +1,14 @@
-package;
+frames = Paths.spritesheet("characters/BOYFRIEND");
 
-class Bf
-{
-    
-}
+addPrefix('idle', 'BF idle dance');
+addPrefix('singUP', 'BF NOTE UP0');
+addPrefix('singLEFT', 'BF NOTE LEFT0');
+addPrefix('singRIGHT', 'BF NOTE RIGHT0');
+addPrefix('singDOWN', 'BF NOTE DOWN0');
+addPrefix('singUPmiss', 'BF NOTE UP MISS');
+addPrefix('singLEFTmiss', 'BF NOTE LEFT MISS');
+addPrefix('singRIGHTmiss', 'BF NOTE RIGHT MISS');
+addPrefix('singDOWNmiss', 'BF NOTE DOWN MISS');
+addPrefix('hey', 'BF HEY');
+
+playAnim('idle');

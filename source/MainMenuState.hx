@@ -66,6 +66,8 @@ class MainMenuState extends MusicBeatState
 					MusicBeatState.switchStateWithTransition(CreditsState);
 			}
 		}
+		if (FlxG.keys.justPressed.SEVEN)
+			MusicBeatState.switchStateWithTransition(debug.CharacterTest);
 	}
 
 	function changeSelection(change:Int = 0)

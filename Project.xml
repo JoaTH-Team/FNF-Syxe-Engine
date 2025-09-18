@@ -57,7 +57,7 @@
 	<haxelib name="scriptless-polymod" />
 
 	<!-- Scripting -->
-	<haxelib name="hscript" />
+	<haxelib name="hscript-iris-improved" />
 
 	<!-- Crash Handler -->
 	<haxelib name="cataclysm" />
@@ -91,7 +91,7 @@
 	<haxedef name="HXCPP_STACK_TRACE" />
 	<haxedef name="openfl-enable-handle-error" />
 
-	<!-- HScript need -->
+	<!-- HScript Iris Improved need -->
 	<haxedef name="hscriptPos" />
 	
 	<!-- hxdiscord RPC need -->
