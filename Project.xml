@@ -57,7 +57,6 @@
 	<haxelib name="scriptless-polymod" />
 
 	<!-- Scripting -->
-	<haxelib name="interpret" />
 	<haxelib name="hscript" />
 
 	<!-- Crash Handler -->
@@ -92,10 +91,8 @@
 	<haxedef name="HXCPP_STACK_TRACE" />
 	<haxedef name="openfl-enable-handle-error" />
 
-	<!-- Interpret need -->
+	<!-- HScript need -->
 	<haxedef name="hscriptPos" />
-	<haxedef name="interpretable" />
-	<haxedef name="interpret_watch" />
 	
 	<!-- hxdiscord RPC need -->
 	<haxedef name="DISCORD_DISABLE_IO_THREAD" if="hxdiscord_rpc" />
@@ -103,4 +100,8 @@
 	<!-- Engine need -->
 	<haxeflag name="-dce" value="no" />
 	<haxedef name="HXCPP_GC_BIG_BLOCKS" />
+
+	<!-- Macro Fix -->
+	<haxeflag name="--macro" value="allowPackage('flash')" />
+	<haxeflag name="--macro" value="include('my.pack')" />
 </project>
