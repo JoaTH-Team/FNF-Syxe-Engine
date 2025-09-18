@@ -34,7 +34,7 @@ class OptionsControlsSubState extends MusicBeatSubState
 
 		for (i in 0...categoryNames.length)
 		{
-			var text:OptionsTextList = new OptionsTextList(20, 70 + i * 40, 0, categoryNames[i], 32);
+			var text:OptionsTextList = new OptionsTextList(20, 50 + i * 40, 0, categoryNames[i], 32);
 			text.ID = i;
 			groupCategories.add(text);
 		}
@@ -90,6 +90,7 @@ class OptionsControlsSubState extends MusicBeatSubState
 			var text:OptionsTextList = new OptionsTextList(250, 150 + i * 30, 0, displayText, 64);
 			text.targetY = i;
 			text.ID = i;
+			text.defaultX = 150;
 			text.asMenuItem = true;
 			groupOptions.add(text);
 		}

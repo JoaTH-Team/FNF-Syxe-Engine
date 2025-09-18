@@ -57,7 +57,8 @@
 	<haxelib name="scriptless-polymod" />
 
 	<!-- Scripting -->
-	<haxelib name="rulescript" />
+	<haxelib name="interpret" />
+	<haxelib name="hscript" />
 
 	<!-- Crash Handler -->
 	<haxelib name="cataclysm" />
@@ -91,9 +92,11 @@
 	<haxedef name="HXCPP_STACK_TRACE" />
 	<haxedef name="openfl-enable-handle-error" />
 
-	<!-- RuleScript need -->
+	<!-- Interpret need -->
 	<haxedef name="hscriptPos" />
-
+	<haxedef name="interpretable" />
+	<haxedef name="interpret_watch" />
+	
 	<!-- hxdiscord RPC need -->
 	<haxedef name="DISCORD_DISABLE_IO_THREAD" if="hxdiscord_rpc" />
 
