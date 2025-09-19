@@ -13,7 +13,7 @@ class CoolUtil {
 	{
 		return FlxMath.lerp(a, b, camLerpShit(ratio));
 	}
-	public static function updateFPS():Void
+	public static function updateFPS()
 	{
 		FlxG.updateFramerate = FlxG.drawFramerate = SaveData.settings.framerate;
 	}
