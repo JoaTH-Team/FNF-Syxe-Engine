@@ -53,6 +53,7 @@ class TitleState extends MusicBeatState
 			{
 				camera.zoom += 0.135;
 				allowZoomBeat = false;
+				FlxG.sound.play(Paths.sound('menu/confirmMenu'));
 				camera.flash(FlxColor.WHITE, 1, function()
 				{
 					MusicBeatState.switchStateWithTransition(MainMenuState);

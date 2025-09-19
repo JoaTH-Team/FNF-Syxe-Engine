@@ -73,6 +73,7 @@ class MainMenuState extends MusicBeatState
 	function changeSelection(change:Int = 0)
 	{
 		curSelected = FlxMath.wrap(curSelected + change, 0, groupSong.length - 1);
+		FlxG.sound.play(Paths.sound('menu/scrollMenu'));
 
 		groupMenu.forEach(function(sprite:FunkinSprite)
 		{

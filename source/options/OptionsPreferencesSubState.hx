@@ -114,6 +114,7 @@ class OptionsPreferencesSubState extends MusicBeatSubState
         super.update(elapsed);
 
         if (controls.justPressed.BACK) {
+			FlxG.sound.play(Paths.sound('menu/cancelMenu'));
             SaveData.saveSettings();
             this.close();
         }
@@ -123,6 +124,7 @@ class OptionsPreferencesSubState extends MusicBeatSubState
         }
 
         if (controls.justPressed.ACCEPT) {
+			FlxG.sound.play(Paths.sound('menu/scrollMenu'));
             var option = options[curSelected];
             if (option.type == "Bool") {
                 var newValue = !currentValues.get(option.name);
@@ -133,6 +135,7 @@ class OptionsPreferencesSubState extends MusicBeatSubState
         }
 
         if (controls.justPressed.UI_LEFT || controls.justPressed.UI_RIGHT) {
+			FlxG.sound.play(Paths.sound('menu/scrollMenu'));
             var option = options[curSelected];
             var currentValue = currentValues.get(option.name);
 
@@ -168,6 +171,7 @@ class OptionsPreferencesSubState extends MusicBeatSubState
 
     function changeSelection(change:Int = 0) {
         curSelected = FlxMath.wrap(curSelected + change, 0, groupOptions.length - 1);
+		FlxG.sound.play(Paths.sound('menu/scrollMenu'));
 
         var inSelected:Int = 0;
         groupOptions.forEach(function(text:OptionsTextList) {

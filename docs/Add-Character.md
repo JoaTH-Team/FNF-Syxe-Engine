@@ -1,3 +1,11 @@
+# Adding Character
+First, create a character script name on the `data/characters` folder, the extension must `.hxs`!
+
+After that, you can now scripts the character however you like
+
+Example:
+```haxe
+// bf character scripts
 frames = Paths.spritesheet("characters/BOYFRIEND");
 
 addPrefix('idle', 'BF idle dance');
@@ -31,3 +39,6 @@ addOffset('deathConfirm', 37, 69);
 addOffset('scared', -4);
 
 playAnim('idle');
+```
+
+Btw, if the error come up like: `[ERROR:Iris:3]: Unknown variable: addPrefix`, is pretty normal btw (the addPrefix is already added but the hscript-iris-improved is not found), idk why but that still work?

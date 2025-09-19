@@ -140,6 +140,7 @@ class OptionsControlsSubState extends MusicBeatSubState
 		{
 			if (FlxG.keys.firstJustPressed() != -1)
 			{
+				FlxG.sound.play(Paths.sound('menu/confirmMenu'));
 				var pressedKey = FlxG.keys.firstJustPressed();
 				var keyName = FlxKey.toStringMap.get(pressedKey);
 
@@ -163,6 +164,7 @@ class OptionsControlsSubState extends MusicBeatSubState
 
 			if (FlxG.keys.justPressed.ESCAPE)
 			{
+				FlxG.sound.play(Paths.sound('menu/cancelMenu'));
 				inChange = false;
 				refreshList();
 			}
@@ -170,6 +172,7 @@ class OptionsControlsSubState extends MusicBeatSubState
 
 		if (FlxG.keys.justPressed.ESCAPE)
 		{
+			FlxG.sound.play(Paths.sound('menu/cancelMenu'));
 			SaveData.saveSettings();
 			this.close();
 		}
@@ -185,6 +188,7 @@ class OptionsControlsSubState extends MusicBeatSubState
 
 		if (FlxG.keys.justPressed.ENTER)
 		{
+			FlxG.sound.play(Paths.sound('menu/scrollMenu'));
 			inChange = true;
 			groupOptions.members[curSelected].text = "PRESS ANY KEY...";
 			groupOptions.members[curSelected].color = FlxColor.YELLOW;
@@ -194,6 +198,7 @@ class OptionsControlsSubState extends MusicBeatSubState
 	function changeSelection(change:Int = 0)
 	{
 		curSelected = FlxMath.wrap(curSelected + change, 0, groupOptions.length - 1);
+		FlxG.sound.play(Paths.sound('menu/scrollMenu'));
 
 		var inSelected:Int = 0;
 		groupOptions.forEach(function(text:OptionsTextList)

@@ -54,6 +54,7 @@ class OptionsState extends MusicBeatState
 		}
 
         if (controls.justPressed.ACCEPT) {
+			FlxG.sound.play(Paths.sound('menu/confirmMenu'));
             switch (listOptions[curSelected])
             {
                 case "Preferences":
@@ -69,6 +70,7 @@ class OptionsState extends MusicBeatState
 
     function changeSelection(change:Int = 0) {
 		curSelected = FlxMath.wrap(curSelected + change, 0, groupOptions.length - 1);
+		FlxG.sound.play(Paths.sound('menu/scrollMenu'));
 
 		var inSelected:Int = 0;
 		groupOptions.forEach(function(text:OptionsTextList)
