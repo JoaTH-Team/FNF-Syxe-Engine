@@ -49,6 +49,7 @@ class MainMenuState extends MusicBeatState
 
 		if (controls.justPressed.BACK)
 		{
+			FlxG.sound.play(Paths.sound('menu/cancelMenu'));
 			MusicBeatState.switchStateWithTransition(TitleState);
 		}
 
@@ -67,7 +68,10 @@ class MainMenuState extends MusicBeatState
 			}
 		}
 		if (FlxG.keys.justPressed.SEVEN)
+		{
+			FlxG.sound.play(Paths.sound('menu/scrollMenu'));
 			MusicBeatState.switchStateWithTransition(debug.CharacterTest);
+		}
 	}
 
 	function changeSelection(change:Int = 0)

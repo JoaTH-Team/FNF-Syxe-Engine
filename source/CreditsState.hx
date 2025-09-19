@@ -34,6 +34,7 @@ class CreditsState extends MusicBeatState
 			textCredits.targetY = i;
 			groupCredits.add(textCredits);
         }
+		changeSelection();
     }
 
     override function update(elapsed:Float) {

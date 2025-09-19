@@ -40,7 +40,7 @@ class CharacterTest extends MusicBeatState
 			return 0;
 		});
 
-		animTxt = new FunkinText(30, 30, FlxG.width - 60, "", 24);
+		animTxt = new FunkinText(30, 30, 0, "", 24);
 		add(animTxt);
 
 		changeSelection(0);
